@@ -1,9 +1,10 @@
 import React from 'react'
+import { View, Text } from 'react-native'
 
 function  LandingScreen({}){
     return (
         <View>
-            <Text>Welcome</Text>
+            <Text>Landing</Text>
         </View>
     )
 }

@@ -1,9 +1,10 @@
 import React from 'react'
+import { View, Text } from 'react-native'
 
 function  TrackerScreen({}){
     return (
         <View>
-            <Text>Welcome</Text>
+            <Text>tracker</Text>
         </View>
     )
 }

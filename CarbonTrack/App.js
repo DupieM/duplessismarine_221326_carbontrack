@@ -1,12 +1,60 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import LogInScreen from './screens/LogIn_Screen';
+import SignUpScreen from './screens/SignUp_Screen';
+import LandingScreen from './screens/Landing_Screen';
+import TrackerScreen from './screens/Tracker_Screen';
+import ReduceScreen from './screens/Reduce_Screen';
+import InitiativeScreen from './screens/Initiative_Screen';
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
+
+  const [loggedIn, setLoggedIn] = useState(false)
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Login" component={LogInScreen}/>
+        <Stack.Screen name="SignUp" component={SignUpScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+
+    // <NavigationContainer>
+    //   <Tab.Navigator screenOptions={{headerShown: false}}>
+    //     <Tab.Screen name="Home" component={LandingScreen}/>
+    //     <Tab.Screen name="Track" component={TrackerScreen}/>
+    //     <Tab.Screen name="Reduce" component={ReduceScreen}/>
+    //     <Tab.Screen name="Initiative" component={InitiativeScreen}/>
+    //   </Tab.Navigator>
+    // </NavigationContainer>
+
+    // <>
+    //   { loggedIn ? (
+    //     <NavigationContainer>
+    //       <Tab.Navigator screenOptions={{headerShown: false}}>
+    //         <Tab.Screen name="Home" component={LandingScreen}/>
+    //         <Tab.Screen name="Track" component={TrackerScreen}/>
+    //         <Tab.Screen name="Reduce" component={ReduceScreen}/>
+    //         <Tab.Screen name="Initiative" component={InitiativeScreen}/>
+    //       </Tab.Navigator>
+    //     </NavigationContainer>
+    //   ) : (
+    //     <NavigationContainer>
+    //       <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+    //         <Stack.Screen name="Login" component={LogInScreen}/>
+    //         <Stack.Screen name="SignUp" component={SignUpScreen}/>
+    //       </Stack.Navigator>
+    //     </NavigationContainer>
+    //   )}
+    // </>
   );
 }
 

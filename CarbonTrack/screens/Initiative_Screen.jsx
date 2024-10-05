@@ -1,9 +1,10 @@
 import React from 'react'
+import { View, Text } from 'react-native'
 
 function  InitiativeScreen({}){
     return (
         <View>
-            <Text>Welcome</Text>
+            <Text>Initiative</Text>
         </View>
     )
 }

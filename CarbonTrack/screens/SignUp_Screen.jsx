@@ -2,9 +2,11 @@ import React from 'react'
 
 function  SignUpScreen({}){
     return (
-        <View>
-            <Text>Welcome</Text>
-        </View>
+        <ScrollView>
+            <View>
+                <Text>Log In</Text>
+            </View>
+        </ScrollView>
     )
 }
 
