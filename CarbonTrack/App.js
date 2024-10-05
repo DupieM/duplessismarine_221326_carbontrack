@@ -20,21 +20,49 @@ export default function App() {
 
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Login" component={LogInScreen}/>
-        <Stack.Screen name="SignUp" component={SignUpScreen}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-
     // <NavigationContainer>
-    //   <Tab.Navigator screenOptions={{headerShown: false}}>
-    //     <Tab.Screen name="Home" component={LandingScreen}/>
-    //     <Tab.Screen name="Track" component={TrackerScreen}/>
-    //     <Tab.Screen name="Reduce" component={ReduceScreen}/>
-    //     <Tab.Screen name="Initiative" component={InitiativeScreen}/>
-    //   </Tab.Navigator>
+    //   <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+    //     <Stack.Screen name="Login" component={LogInScreen}/>
+    //     <Stack.Screen name="SignUp" component={SignUpScreen}/>
+    //   </Stack.Navigator>
     // </NavigationContainer>
+
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle: {
+        backgroundColor: '#303031',
+        height: 55,
+        borderTopWidth: 0,
+        padding: 3,
+        paddingBottom: 3
+      }})}>
+        <Tab.Screen name="Home" component={LandingScreen}
+          options={{
+            tabBarLabel: 'Home',
+
+          }}
+        />
+        <Tab.Screen name="Track" component={TrackerScreen}
+          options={{
+            tabBarLabel: 'Track',
+            
+          }}
+        />
+        <Tab.Screen name="Reduce" component={ReduceScreen}
+          options={{
+            tabBarLabel: 'Reduce',
+            
+          }}
+        />
+        <Tab.Screen name="Initiative" component={InitiativeScreen}
+          options={{
+            tabBarLabel: 'Initiative',
+            
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
 
     // <>
     //   { loggedIn ? (

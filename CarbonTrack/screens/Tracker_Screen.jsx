@@ -1,12 +1,21 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 
 function  TrackerScreen({}){
     return (
-        <View>
-            <Text>tracker</Text>
+        <View style={styles.container}>
+            <Text>Tracker</Text>
         </View>
     )
 }
 
 export default TrackerScreen
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+});
