@@ -1,21 +1,59 @@
-import React from 'react'
-import { View, Text, ScrollView, ImageBackground, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, ScrollView, ImageBackground, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { googlesignin, handleLogin } from '../services/authService';
 
 function  LogInScreen({ navigation }){
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    // Login Function
+    const [isFormValid, setIsFormValid] = useState(false);
+    useEffect(() => {
+        // Check if all required fields are filled
+        if (email.trim() && password.trim()) {
+            setIsFormValid(true);
+        } else {
+            setIsFormValid(false);
+        }
+    }, [email, password]);
+
+    const login = async () => {
+        //Make sure all the values have been entered - show error/disable button
+        if (!isFormValid) {
+          Alert.alert("Validation Error", "Please fill all the required fields.");
+          return;
+        }
+    
+        var success = await handleLogin(email, password);
+          
+          if (success) {
+            Alert.alert("Log In", "You have successfully logged into FunRun.");
+            return;
+          }
+      }
+
     return (
         <ScrollView style={styles.container}>
             <ImageBackground source={require('../assets/Auth_Picture_1.png')} style={styles.img}>
                 <View style={styles.card}>
                     <Text style={styles.mainhead}>Log In</Text>
                     <View>
-                        <TextInput style={styles.input} placeholder='Email'/>
+                        <TextInput style={styles.input} placeholder='Email'
+                        onChangeText={newText => setEmail(newText)}
+                        defaultValue={email}
+                        />
                     </View>
                     <View>
-                        <TextInput style={styles.input} placeholder='Password'/>
+                        <TextInput style={styles.input} placeholder='Password'
+                        onChangeText={newText => setPassword(newText)}
+                        defaultValue={password}
+                        secureTextEntry={true}
+                        />
                         <Text style={styles.password}>Forgot Password?</Text>
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.Btn}>
+                        <TouchableOpacity style={styles.Btn} onPress={login}>
                             <Text style={styles.Btntext}>Proceed</Text>
                         </TouchableOpacity>
                     </View>

@@ -1,9 +1,42 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, ImageBackground, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-
+import { handleSignin } from '../services/authService';
 
 function  SignUpScreen({}){
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [username, setUserName] = useState('');
+
+    //Sign up Function
+    const [isFormValid, setIsFormValid] = useState(false);
+    useEffect(() => {
+        // Check if all required fields are filled
+        if (username.trim()) {
+            setIsFormValid(true);
+        } else {
+            setIsFormValid(false);
+        }
+    }, [username]);
+
+    const handleCreation = async () => {
+        //Need to pass all our data to the function
+
+        //Make sure all the values have been entered - show error/disable button
+        if (!isFormValid) {
+            Alert.alert("Validation Error", "Please fill all the required fields.");
+            return;
+        }
+        //switch handlesigning and createuserinfo functions om
+
+        var infos = {username, email, password}
+        var success = await handleSignin(email, password, infos);
+        
+        if (success) {
+        Alert.alert("Sign Up", "You have successfully siged into FunRun.");
+        return;
+        }
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -11,17 +44,27 @@ function  SignUpScreen({}){
                 <View style={styles.card}>
                     <Text style={styles.mainhead}>Sign Up</Text>
                     <View>
-                        <TextInput style={styles.input} placeholder='Username'/>
+                        <TextInput style={styles.input} placeholder='Username'
+                        onChangeText={newText => setUserName(newText)}
+                        defaultValue={username}
+                        />
                     </View>
                     <View>
-                        <TextInput style={styles.input} placeholder='Email'/>
+                        <TextInput style={styles.input} placeholder='Email'
+                        onChangeText={newText => setEmail(newText)}
+                        defaultValue={email}
+                        />
                     </View>
                     <View>
-                        <TextInput style={styles.input} placeholder='Password'/>
+                        <TextInput style={styles.input} placeholder='Password'
+                        onChangeText={newText => setPassword(newText)}
+                        defaultValue={password}
+                        secureTextEntry={true}
+                        />
                         <Text style={styles.password}>Forgot Password?</Text>
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.Btn}>
+                        <TouchableOpacity style={styles.Btn} onPress={handleCreation}>
                             <Text style={styles.Btntext}>Proceed</Text>
                         </TouchableOpacity>
                     </View>
