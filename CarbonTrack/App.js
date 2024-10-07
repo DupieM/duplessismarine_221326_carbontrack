@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, Image, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -57,25 +57,77 @@ export default function App() {
           <Tab.Screen name="Home" component={LandingScreen}
             options={{
               tabBarLabel: 'Home',
-  
+              tabBarActiveTintColor: '#58BB44',
+              tabBarInactiveTintColor: 'gray',
+              tabBarIcon: ({size,focused,color}) => {
+                return (
+                  <Image
+                    style={{ width: size, height: size }}
+                    source={
+                      focused
+                        ? require('./assets/Home_Active.png')
+                        : require('./assets/Home_Inactive.png')
+                    }
+                  />
+                );
+              },
             }}
           />
           <Tab.Screen name="Track" component={TrackerScreen}
             options={{
               tabBarLabel: 'Track',
-              
+              tabBarActiveTintColor: '#58BB44',
+              tabBarInactiveTintColor: 'gray',
+              tabBarIcon: ({size,focused,color}) => {
+                return (
+                  <Image
+                    style={{ width: size, height: size }}
+                    source={
+                      focused
+                        ? require('./assets/Track_Active.png')
+                        : require('./assets/Track_Inactive.png')
+                    }
+                  />
+                );
+              },
             }}
           />
           <Tab.Screen name="Reduce" component={ReduceScreen}
             options={{
               tabBarLabel: 'Reduce',
-              
+              tabBarActiveTintColor: '#58BB44',
+              tabBarInactiveTintColor: 'gray',
+              tabBarIcon: ({size,focused,color}) => {
+                return (
+                  <Image
+                    style={{ width: size, height: size }}
+                    source={
+                      focused
+                        ? require('./assets/Reduce_Active.png')
+                        : require('./assets/Reduce_Inactive.png')
+                    }
+                  />
+                );
+              },
             }}
           />
           <Tab.Screen name="Initiative" component={InitiativeScreen}
             options={{
               tabBarLabel: 'Initiative',
-              
+              tabBarActiveTintColor: '#58BB44',
+              tabBarInactiveTintColor: 'gray',
+              tabBarIcon: ({size,focused,color}) => {
+                return (
+                  <Image
+                    style={{ width: size, height: size }}
+                    source={
+                      focused
+                        ? require('./assets/Initiative_Active.png')
+                        : require('./assets/Initiative_Inactive.png')
+                    }
+                  />
+                );
+              },
             }}
           />
         </Tab.Navigator>
