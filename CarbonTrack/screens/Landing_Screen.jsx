@@ -15,20 +15,26 @@ function  LandingScreen({ navigation }){
                 <View>
                     <Text style={styles.subhead}>Explore CarbonTrack</Text>
                     <View>
-                        <View>
-                            <TouchableOpacity onPress={() => navigation.navigate('Tracker')}>
-                                <Image />
-                                <Text>Track</Text>
+                        <View style={styles.box}>
+                            <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Tracker')}>
+                                <Image source={require('../assets/Calculate.png')}/>
+                                <Text style={styles.cardparagrap}>
+                                    Calculate{"\n"}
+                                    Footprint
+                                </Text>
                             </TouchableOpacity>
-                            <Image />
+                            <Image style={styles.image} source={require('../assets/planet_earth_1.png')}/>
                         </View>
                     </View>
                     <View>
-                        <View>
-                            <Image />
-                            <TouchableOpacity onPress={() => navigation.navigate('Reduce')}>
-                                <Image />
-                                <Text>Reduce</Text>
+                        <View style={styles.box}>
+                            <Image style={styles.image2} source={require('../assets/planet_earth_2.png')}/>
+                            <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce')}>
+                                <Text style={styles.cardparagrap2}>
+                                    Tips to{"\n"}
+                                    reduce
+                                </Text>
+                                <Image style={styles.tips} source={require('../assets/Tips.png')}/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -47,7 +53,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#007541',
     },
     container2: {
-        alignItems: 'center',
+        alignItems: 'left',
     },
     head: {
         alignItems: 'center',
@@ -68,10 +74,52 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         fontSize: 34,
-        color: '#438EF3'
+        color: '#438EF3',
+        textAlign: 'center',
     },
     subhead: {
-        fontSize: 35,
-        color: 'white'
+        fontSize: 36,
+        color: 'white',
+        textAlign: 'center',
+        fontWeight: '500'
+    },
+    box: {
+        flexDirection: 'row',
+        marginTop: 30,
+    },
+    cardone: {
+        backgroundColor: '#3AA345',
+        marginRight: 27,
+        borderRadius: 10,
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 15,
+        paddingRight: 15,
+        flexDirection: 'row',
+        marginLeft: 27,
+        height: 94
+    },
+    cardparagrap: {
+        marginLeft: 15,
+        fontSize: 30,
+        color: '#C1FF1C'
+    },
+    image: {
+        height: 97,
+        width: 61,
+        marginLeft: 17
+    },
+    image2: {
+        height: 100,
+        width: 66,
+        marginRight: 20
+    },
+    cardparagrap2: {
+        fontSize: 30,
+        color: '#C1FF1C',
+        marginRight: 20
+    },
+    tips: {
+        marginTop: 4
     }
 });

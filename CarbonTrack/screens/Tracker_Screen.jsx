@@ -14,7 +14,7 @@ export default TrackerScreen
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#007541',
       alignItems: 'center',
       justifyContent: 'center',
     },

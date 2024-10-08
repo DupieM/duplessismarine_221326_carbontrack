@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native'
 function  InitiativeScreen({}){
     return (
         <View style={styles.container}>
-            <Text>Initiative</Text>
+            <Text>Reduce</Text>
         </View>
     )
 }
@@ -14,7 +14,7 @@ export default InitiativeScreen
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#007541',
       alignItems: 'center',
       justifyContent: 'center',
     },

@@ -18,112 +18,6 @@ import ResultScreen from './screens/Result-Screen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function MainStackNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
-      
-      {/* TrackerScreen will be part of the stack but won't show in bottom navigation */}
-      <Stack.Screen 
-        name="Tracker" 
-        component={TrackerScreen} 
-        options={{ headerShown: false }} 
-      />
-    </Stack.Navigator>
-  );
-}
-
-function MainTabNavigator() {
-  return (
-      <Tab.Navigator screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarStyle: {
-          backgroundColor: '#303031',
-          height: 55,
-          borderTopWidth: 0,
-          padding: 3,
-          paddingBottom: 3
-        }})}>
-          <Tab.Screen name="Home" component={MainStackNavigator}
-            options={{
-              tabBarLabel: 'Home',
-              tabBarActiveTintColor: '#58BB44',
-              tabBarInactiveTintColor: 'gray',
-              tabBarIcon: ({size,focused,color}) => {
-                return (
-                  <Image
-                    style={{ width: size, height: size }}
-                    source={
-                      focused
-                        ? require('./assets/Home_Active.png')
-                        : require('./assets/Home_Inactive.png')
-                    }
-                  />
-                );
-              },
-            }}
-          />
-          <Tab.Screen name="Track" component={ResultScreen}
-            options={{
-              tabBarLabel: 'Track',
-              tabBarActiveTintColor: '#58BB44',
-              tabBarInactiveTintColor: 'gray',
-              tabBarIcon: ({size,focused,color}) => {
-                return (
-                  <Image
-                    style={{ width: size, height: size }}
-                    source={
-                      focused
-                        ? require('./assets/Track_Active.png')
-                        : require('./assets/Track_Inactive.png')
-                    }
-                  />
-                );
-              },
-            }}
-          />
-          <Tab.Screen name="Reduce" component={ReduceScreen}
-            options={{
-              tabBarLabel: 'Reduce',
-              tabBarActiveTintColor: '#58BB44',
-              tabBarInactiveTintColor: 'gray',
-              tabBarIcon: ({size,focused,color}) => {
-                return (
-                  <Image
-                    style={{ width: size, height: size }}
-                    source={
-                      focused
-                        ? require('./assets/Reduce_Active.png')
-                        : require('./assets/Reduce_Inactive.png')
-                    }
-                  />
-                );
-              },
-            }}
-          />
-          <Tab.Screen name="Initiative" component={InitiativeScreen}
-            options={{
-              tabBarLabel: 'Initiative',
-              tabBarActiveTintColor: '#58BB44',
-              tabBarInactiveTintColor: 'gray',
-              tabBarIcon: ({size,focused,color}) => {
-                return (
-                  <Image
-                    style={{ width: size, height: size }}
-                    source={
-                      focused
-                        ? require('./assets/Initiative_Active.png')
-                        : require('./assets/Initiative_Inactive.png')
-                    }
-                  />
-                );
-              },
-            }}
-          />
-    </Tab.Navigator>
-  );
-}
-
 export default function App() {
 
   const [loggedIn, setLoggedIn] = useState(false)
@@ -152,7 +46,107 @@ export default function App() {
     <>
       { loggedIn ? (
         <NavigationContainer>
-          <MainTabNavigator />
+          <Tab.Navigator screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarStyle: {
+          backgroundColor: '#303031',
+          height: 55,
+          borderTopWidth: 0,
+          padding: 3,
+          paddingBottom: 3
+          }})}>
+            <Tab.Screen name="Home" component={LandingScreen}
+              options={{
+                tabBarLabel: 'Home',
+                tabBarActiveTintColor: '#58BB44',
+                tabBarInactiveTintColor: 'gray',
+                tabBarIcon: ({size,focused,color}) => {
+                  return (
+                    <Image
+                      style={{ width: size, height: size }}
+                      source={
+                        focused
+                          ? require('./assets/Home_Active.png')
+                          : require('./assets/Home_Inactive.png')
+                      }
+                    />
+                  );
+                },
+              }}
+            />
+            <Tab.Screen name="Tracker" component={TrackerScreen}
+              options={{
+                tabBarLabel: 'Track',
+                tabBarActiveTintColor: '#58BB44',
+                tabBarInactiveTintColor: 'gray',
+                tabBarIcon: ({size,focused,color}) => {
+                  return (
+                    <Image
+                      style={{ width: size, height: size }}
+                      
+                    />
+                  );
+                },
+              }}
+            />
+            <Tab.Screen name="Result" component={ResultScreen}
+              options={{
+                tabBarLabel: 'Result',
+                tabBarActiveTintColor: '#58BB44',
+                tabBarInactiveTintColor: 'gray',
+                tabBarIcon: ({size,focused,color}) => {
+                  return (
+                    <Image
+                      style={{ width: size, height: size }}
+                      source={
+                        focused
+                          ? require('./assets/Track_Active.png')
+                          : require('./assets/Track_Inactive.png')
+                      }
+                    />
+                  );
+                },
+              }}
+            />
+            <Tab.Screen name="Reduce" component={ReduceScreen}
+              options={{
+                tabBarLabel: 'Reduce',
+                tabBarActiveTintColor: '#58BB44',
+                tabBarInactiveTintColor: 'gray',
+                tabBarIcon: ({size,focused,color}) => {
+                  return (
+                    <Image
+                      style={{ width: size, height: size }}
+                      source={
+                        focused
+                          ? require('./assets/Reduce_Active.png')
+                          : require('./assets/Reduce_Inactive.png')
+                      }
+                    />
+                  );
+                },
+              }}
+            />
+            <Tab.Screen name="Initiative" component={InitiativeScreen}
+              options={{
+                tabBarLabel: 'Initiative',
+                tabBarActiveTintColor: '#58BB44',
+                tabBarInactiveTintColor: 'gray',
+                tabBarIcon: ({size,focused,color}) => {
+                  return (
+                    <Image
+                      style={{ width: size, height: size }}
+                      source={
+                        focused
+                          ? require('./assets/Initiative_Active.png')
+                          : require('./assets/Initiative_Inactive.png')
+                      }
+                    />
+                  );
+                },
+              }}
+            />
+          </Tab.Navigator>
         </NavigationContainer>
       ) : (
         <NavigationContainer>
