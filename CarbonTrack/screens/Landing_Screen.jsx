@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
 
-function  LandingScreen({}){
+function  LandingScreen({ navigation }){
     return (
         <ScrollView style={styles.container}>
             <View style={styles.container2}>
@@ -15,8 +15,22 @@ function  LandingScreen({}){
                 <View>
                     <Text style={styles.subhead}>Explore CarbonTrack</Text>
                     <View>
-                        <Image />
-                        <Text></Text>
+                        <View>
+                            <TouchableOpacity onPress={() => navigation.navigate('Tracker')}>
+                                <Image />
+                                <Text>Track</Text>
+                            </TouchableOpacity>
+                            <Image />
+                        </View>
+                    </View>
+                    <View>
+                        <View>
+                            <Image />
+                            <TouchableOpacity onPress={() => navigation.navigate('Reduce')}>
+                                <Image />
+                                <Text>Reduce</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -53,7 +67,8 @@ const styles = StyleSheet.create({
     graph: {
         marginTop: 20,
         marginBottom: 20,
-        fontSize: 30
+        fontSize: 34,
+        color: '#438EF3'
     },
     subhead: {
         fontSize: 35,

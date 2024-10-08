@@ -13,39 +13,29 @@ import InitiativeScreen from './screens/Initiative_Screen';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import ResultScreen from './screens/Result-Screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-export default function App() {
-
-  const [loggedIn, setLoggedIn] = useState(false)
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-
-        setLoggedIn(true)
-        console.log("User logged in... " + user.email)
-
-        } catch (error) {
-          console.error("Error fetching user document: ", error);
-        }
-      } else {
-        setLoggedIn(false)
-        console.log("No user logged in...")
-      }
-    })
-
-    return unsubscribe
-  }, [])
-
+function MainStackNavigator() {
   return (
-    <>
-      { loggedIn ? (
-        <NavigationContainer>
-        <Tab.Navigator screenOptions={({ route }) => ({
+    <Stack.Navigator>
+      <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+      
+      {/* TrackerScreen will be part of the stack but won't show in bottom navigation */}
+      <Stack.Screen 
+        name="Tracker" 
+        component={TrackerScreen} 
+        options={{ headerShown: false }} 
+      />
+    </Stack.Navigator>
+  );
+}
+
+function MainTabNavigator() {
+  return (
+      <Tab.Navigator screenOptions={({ route }) => ({
           headerShown: false,
           tabBarStyle: {
           backgroundColor: '#303031',
@@ -54,7 +44,7 @@ export default function App() {
           padding: 3,
           paddingBottom: 3
         }})}>
-          <Tab.Screen name="Home" component={LandingScreen}
+          <Tab.Screen name="Home" component={MainStackNavigator}
             options={{
               tabBarLabel: 'Home',
               tabBarActiveTintColor: '#58BB44',
@@ -73,7 +63,7 @@ export default function App() {
               },
             }}
           />
-          <Tab.Screen name="Track" component={TrackerScreen}
+          <Tab.Screen name="Track" component={ResultScreen}
             options={{
               tabBarLabel: 'Track',
               tabBarActiveTintColor: '#58BB44',
@@ -130,8 +120,40 @@ export default function App() {
               },
             }}
           />
-        </Tab.Navigator>
-      </NavigationContainer>
+    </Tab.Navigator>
+  );
+}
+
+export default function App() {
+
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+
+        setLoggedIn(true)
+        console.log("User logged in... " + user.email)
+
+        } catch (error) {
+          console.error("Error fetching user document: ", error);
+        }
+      } else {
+        setLoggedIn(false)
+        console.log("No user logged in...")
+      }
+    })
+
+    return unsubscribe
+  }, [])
+
+  return (
+    <>
+      { loggedIn ? (
+        <NavigationContainer>
+          <MainTabNavigator />
+        </NavigationContainer>
       ) : (
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
