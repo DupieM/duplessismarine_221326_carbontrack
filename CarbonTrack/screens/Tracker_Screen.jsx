@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
-import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
 const cardData = [
-  { id: 1, label: 'Swipe left to continue Card 1' },
+  { id: 1, label: 'Swipe left to continue ' },
 ];
 
 function TrackerScreen() {
@@ -58,17 +58,43 @@ const SwipeableCard = ({ label }) => {
     <View>
       <PanGestureHandler onGestureEvent={handleGesture}>
         <Animated.View style={[styles.card, animatedCardStyle]}>
+          {/* <Text style={styles.cardText}>Household Occupants</Text>
+          <TextInput style={styles.input} 
+          placeholder="Enter number" 
+          keyboardType="numeric" 
+          placeholderTextColor="white"
+          />
+          <Text style={styles.cardText}>Type of Transport used</Text>
+          <TextInput style={styles.input} 
+          placeholder="Enter Transport Name" 
+          placeholderTextColor="white"
+          />
+          <Text style={styles.cardText}>Kilometers traveled per year</Text>
+          <TextInput style={styles.input} 
+          placeholder="Enter number" 
+          keyboardType="numeric" 
+          placeholderTextColor="white"
+          />
+          <Text style={styles.cardText}>Number of times you fly per year</Text>
+          <TextInput style={styles.input} 
+          placeholder="Enter number" 
+          keyboardType="numeric" 
+          placeholderTextColor="white"
+          /> */}
+
           <Text style={styles.label}>{label}</Text>
-          <Text style={styles.cardText}>Swipe to fill out the rest of the form</Text>
         </Animated.View>
       </PanGestureHandler>
 
       {showForm && (
         <Animated.View style={[styles.formCard, animatedFormStyle]}>
-          <Text style={styles.formLabel}>Additional Form Fields</Text>
-          <TextInput style={styles.input} placeholder="Enter details" />
-          <TextInput style={styles.input} placeholder="More information" />
-          <Button title="Submit" onPress={() => console.log('Form submitted')} />
+            <Text style={styles.cardText}>Type of energy used</Text>
+            <TextInput style={styles.input} placeholder="Enter type" placeholderTextColor="white"/>
+            <Text style={styles.cardText}>Diet preferences</Text>
+            <TextInput style={styles.input} placeholder="Enter Diet Plan" placeholderTextColor="white"/>
+            <Text style={styles.cardText}>Do you recycle</Text>
+            <TextInput style={styles.input} placeholder="Enter yes/no" placeholderTextColor="white"/>
+            <Button title="Calculate" onPress={() => console.log('Form submitted')} />
         </Animated.View>
       )}
     </View>
@@ -100,15 +126,15 @@ const styles = StyleSheet.create({
     },
     subhead: {
       alignItems: 'center',
-      marginTop: 20,
+      marginTop: 10,
     },
     subText: {
       fontSize: 25,
       color: 'white',
     },
     card: {
-      backgroundColor: '#fff',
-      padding: 20,
+      backgroundColor: '#55A545',
+      padding: 13,
       borderRadius: 10,
       marginTop: 20,
       width: 300,
@@ -119,15 +145,20 @@ const styles = StyleSheet.create({
       elevation: 5,
     },
     label: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: 'bold',
-      marginBottom: 10,
+      marginTop: 10,
+      textAlign: "center",
+      color: '#C1FF1C'
     },
     cardText: {
-      fontSize: 16,
+      fontSize: 20,
+      color: '#343436',
+      fontWeight: '500',
+      marginBottom: 4
     },
     formCard: {
-      backgroundColor: '#fff',
+      backgroundColor: '#55A545',
       padding: 20,
       borderRadius: 10,
       marginTop: 10, // Change marginTop to 10 for closer placement
@@ -145,10 +176,11 @@ const styles = StyleSheet.create({
     },
     input: {
       height: 40,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 5,
+      border: 'none',
+      borderRadius: 8,
       paddingHorizontal: 10,
       marginBottom: 10,
+      backgroundColor: '#007541',
+      color: 'white'
     },
   });
