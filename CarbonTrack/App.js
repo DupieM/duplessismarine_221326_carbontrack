@@ -14,6 +14,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import ResultScreen from './screens/Result-Screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,6 +44,7 @@ export default function App() {
   }, [])
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <>
       { loggedIn ? (
         <NavigationContainer>
@@ -157,6 +159,7 @@ export default function App() {
         </NavigationContainer>
       )}
     </>
+    </GestureHandlerRootView>
   );
 }
 
