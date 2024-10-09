@@ -55,7 +55,7 @@ const SwipeableCard = ({ label }) => {
   });
 
   return (
-    <>
+    <View>
       <PanGestureHandler onGestureEvent={handleGesture}>
         <Animated.View style={[styles.card, animatedCardStyle]}>
           <Text style={styles.label}>{label}</Text>
@@ -71,86 +71,84 @@ const SwipeableCard = ({ label }) => {
           <Button title="Submit" onPress={() => console.log('Form submitted')} />
         </Animated.View>
       )}
-    </>
+    </View>
   );
 };
 
 export default TrackerScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#007541',
-    alignItems: 'center',
-  },
-  head: {
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  mainhead: {
-    fontSize: 50,
-    fontWeight: '700',
-    color: 'white',
-  },
-  mainhead2: {
-    marginTop: -10,
-    fontSize: 50,
-    fontWeight: '700',
-    color: 'white',
-  },
-  subhead: {
-    alignItems: 'center',
-    marginTop: 20
-  },
-  subText: {
-    fontSize: 25,
-    color: 'white',
-  },
-  card: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
-    width: 300,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  cardText: {
-    fontSize: 16,
-  },
-  formCard: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
-    width: 300,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-    position: 'absolute', // Position it above the main card
-    top: 20, // Adjust this if needed to position correctly
-  },
-  formLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-});
+    container: {
+      flex: 1,
+      backgroundColor: '#007541',
+      alignItems: 'center',
+    },
+    head: {
+      alignItems: 'center',
+      marginTop: 30,
+    },
+    mainhead: {
+      fontSize: 50,
+      fontWeight: '700',
+      color: 'white',
+    },
+    mainhead2: {
+      marginTop: -10,
+      fontSize: 50,
+      fontWeight: '700',
+      color: 'white',
+    },
+    subhead: {
+      alignItems: 'center',
+      marginTop: 20,
+    },
+    subText: {
+      fontSize: 25,
+      color: 'white',
+    },
+    card: {
+      backgroundColor: '#fff',
+      padding: 20,
+      borderRadius: 10,
+      marginTop: 20,
+      width: 300,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.8,
+      shadowRadius: 2,
+      elevation: 5,
+    },
+    label: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    cardText: {
+      fontSize: 16,
+    },
+    formCard: {
+      backgroundColor: '#fff',
+      padding: 20,
+      borderRadius: 10,
+      marginTop: 10, // Change marginTop to 10 for closer placement
+      width: 300,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.8,
+      shadowRadius: 2,
+      elevation: 5,
+    },
+    formLabel: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    input: {
+      height: 40,
+      borderColor: '#ccc',
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      marginBottom: 10,
+    },
+  });

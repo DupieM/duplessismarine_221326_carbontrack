@@ -8,10 +8,12 @@ function  InitiativeScreen({}){
                 <Text style={styles.mainhead}>Local Initiatives</Text>
             </View>
             <TouchableOpacity style={styles.cardone}>
-                <Image />
-                <Text style={styles.cardparagrap}>Name</Text>
-                <Text style={styles.cardparagrap}>Description</Text>
-                <Text style={styles.cardparagrap}>Location</Text>
+                <Image style={styles.img} source={require('../assets/planet-earth.png')}/>
+                <View>
+                    <Text style={styles.cardparagrap}>Name</Text>
+                    <Text style={styles.cardparagrap}>Description</Text>
+                    <Text style={styles.cardparagrap}>Location</Text>
+                </View>
             </TouchableOpacity>
         </View>
     )
@@ -50,10 +52,16 @@ const styles = StyleSheet.create({
           paddingRight: 15,
           marginLeft: 27,
           marginTop: 25,
-          width: 300
+          flexDirection: 'row',
+          width: 320
+      },
+      img: {
+        height: 100,
+        width: 100,
+        marginRight: 20
       },
       cardparagrap: {
-          fontSize: 30,
+          fontSize: 25,
           color: '#C1FF1C'
       },
 });
