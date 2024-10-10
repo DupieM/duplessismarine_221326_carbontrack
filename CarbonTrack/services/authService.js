@@ -1,5 +1,5 @@
 // Firebase Auth Functions
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import { auth, db } from "../firebase";
 import { createUserInformation } from "./DbService";
 

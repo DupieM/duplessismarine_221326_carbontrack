@@ -55,7 +55,7 @@ const SwipeableCard = ({ label }) => {
   });
 
   return (
-    <View>
+    <View style={styles.swipeableContainer}>
       <PanGestureHandler onGestureEvent={handleGesture}>
         <Animated.View style={[styles.card, animatedCardStyle]}>
           {/* <Text style={styles.cardText}>Household Occupants</Text>
@@ -94,7 +94,8 @@ const SwipeableCard = ({ label }) => {
             <TextInput style={styles.input} placeholder="Enter Diet Plan" placeholderTextColor="white"/>
             <Text style={styles.cardText}>Do you recycle</Text>
             <TextInput style={styles.input} placeholder="Enter yes/no" placeholderTextColor="white"/>
-            <Button title="Calculate" onPress={() => console.log('Form submitted')} />
+            <Button title="Calculate
+            " onPress={() => console.log('Form submitted')} />
         </Animated.View>
       )}
     </View>
@@ -132,6 +133,10 @@ const styles = StyleSheet.create({
       fontSize: 25,
       color: 'white',
     },
+    // swipeableContainer: {
+    //   flexDirection: 'row',
+    //   display: 'flex'
+    // },
     card: {
       backgroundColor: '#55A545',
       padding: 13,

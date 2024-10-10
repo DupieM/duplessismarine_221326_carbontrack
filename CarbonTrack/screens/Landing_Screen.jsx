@@ -1,7 +1,14 @@
 import React from 'react'
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { handleSignOut } from '../services/authService'
 
 function  LandingScreen({ navigation }){
+
+// Logout
+const handleSignout = () => {
+    handleSignOut()
+}
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.container2}>
@@ -37,6 +44,12 @@ function  LandingScreen({ navigation }){
                                 <Image style={styles.tips} source={require('../assets/Tips.png')}/>
                             </TouchableOpacity>
                         </View>
+                    </View>
+                    <View style={styles.signout}>
+                        <Text style={styles.signouttext}>We hope to see you agin? </Text>
+                        <TouchableOpacity style={styles.button} onPress={handleSignout}>
+                            <Text style={styles.buttontext}>Sign Out</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -121,5 +134,29 @@ const styles = StyleSheet.create({
     },
     tips: {
         marginTop: 4
+    },
+    signout: {
+        flexDirection: 'row',
+        marginTop: 30
+    },
+    signouttext: {
+        color: 'white',
+        marginLeft: 10,
+        fontSize: 19,
+        marginRight: 10,
+        marginTop: 6
+    },
+    button: {
+        backgroundColor: '#C1FF1C',
+        borderRadius: 20,
+        width: 100,
+        height: 40,
+        alignItems: 'center',
+    },
+    buttontext: {
+        fontSize: 19,
+        fontWeight: '600',
+        marginTop: 6,
+        color: '#343436'
     }
 });
