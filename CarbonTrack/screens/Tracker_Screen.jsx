@@ -50,7 +50,7 @@ const SwipeableCard = ({ label }) => {
 
   const animatedFormStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: showForm ? 0 : -300 }], // Animation for the form card
+      transform: [{ translateX: showForm ? -300 : 0 }],
     };
   });
 
@@ -58,7 +58,7 @@ const SwipeableCard = ({ label }) => {
     <View style={styles.swipeableContainer}>
       <PanGestureHandler onGestureEvent={handleGesture}>
         <Animated.View style={[styles.card, animatedCardStyle]}>
-          {/* <Text style={styles.cardText}>Household Occupants</Text>
+          <Text style={styles.cardText}>Household Occupants</Text>
           <TextInput style={styles.input} 
           placeholder="Enter number" 
           keyboardType="numeric" 
@@ -80,14 +80,14 @@ const SwipeableCard = ({ label }) => {
           placeholder="Enter number" 
           keyboardType="numeric" 
           placeholderTextColor="white"
-          /> */}
+          />
 
           <Text style={styles.label}>{label}</Text>
         </Animated.View>
       </PanGestureHandler>
 
       {showForm && (
-        <Animated.View style={[styles.formCard, animatedFormStyle]}>
+        <Animated.View style={[styles.formContainer, animatedFormStyle]}>
             <Text style={styles.cardText}>Type of energy used</Text>
             <TextInput style={styles.input} placeholder="Enter type" placeholderTextColor="white"/>
             <Text style={styles.cardText}>Diet preferences</Text>
@@ -161,6 +161,17 @@ const styles = StyleSheet.create({
       color: '#343436',
       fontWeight: '500',
       marginBottom: 4
+    },
+    formContainer: {
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      bottom: 0,
+      width: 300,
+      backgroundColor: '#55A545',
+      padding: 20,
+      borderRadius: 10,
+      marginTop: 10,
     },
     formCard: {
       backgroundColor: '#55A545',
