@@ -13,3 +13,14 @@ export const createUserInformation = async (info, uid) => {
     }
 };
 
+//Create new entry to track carbon footprint
+export const createNewEntry = async (formData, uid) => {
+    try {
+        const docRef = await setDoc(doc(db, "carbon_footprints", uid), formData);
+        console.log("Carbon footprint data successfully written");
+    } catch (e) {
+        console.error("Error writing document: ", e);
+    }
+};
+
+//Get all the initiatives

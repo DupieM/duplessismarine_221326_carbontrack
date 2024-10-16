@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { createNewEntry } from '../services/DbService';
 
 const cardData = [
   { id: 1, label: 'Swipe left to continue ' },
@@ -30,6 +31,15 @@ const SwipeableCard = ({ label }) => {
   const translateX = useSharedValue(0);
   const [showForm, setShowForm] = useState(false);
 
+  //data for form
+  const [householdOccupants, setHouseholdOccupants] = useState('');
+  const [transportUsed, setTransportUsed] = useState('');
+  const [kilometersTraveled, setKilometersTraveled] = useState('');
+  const [flightsPerYear, setFlightsPerYear] = useState('');
+  const [energyType, setEnergyType] = useState('');
+  const [dietPreferences, setDietPreferences] = useState('');
+  const [recycle, setRecycle] = useState('');
+
   const handleGesture = (event) => {
     if (event.nativeEvent.translationX < -50) {
       // Swipe left action
@@ -54,6 +64,24 @@ const SwipeableCard = ({ label }) => {
     };
   });
 
+  //to create enrty in database
+  const handleSubmit = async () => {
+    const formData = {
+      householdOccupants,
+      transportUsed,
+      kilometersTraveled,
+      flightsPerYear,
+      energyType,
+      dietPreferences,
+      recycle
+    };
+
+    // Assuming you have a uid (user ID)
+    const uid = "some-unique-user-id"; // Replace with actual user ID
+    await createNewEntry(formData, uid);
+    console.log("Form data submitted:", formData);
+  };
+
   return (
     <View style={styles.swipeableContainer}>
       <PanGestureHandler onGestureEvent={handleGesture}>
@@ -63,23 +91,31 @@ const SwipeableCard = ({ label }) => {
           placeholder="Enter number" 
           keyboardType="numeric" 
           placeholderTextColor="white"
+          Value={householdOccupants}
+          onChangeText={newText => setHouseholdOccupants(newText)}
           />
           <Text style={styles.cardText}>Type of Transport used</Text>
           <TextInput style={styles.input} 
           placeholder="Enter Transport Name" 
           placeholderTextColor="white"
+          Value={transportUsed}
+          onChangeText={newText => setTransportUsed(newText)}
           />
           <Text style={styles.cardText}>Kilometers traveled per year</Text>
           <TextInput style={styles.input} 
           placeholder="Enter number" 
           keyboardType="numeric" 
           placeholderTextColor="white"
+          Value={kilometersTraveled}
+          onChangeText={newText => setKilometersTraveled(newText)}
           />
           <Text style={styles.cardText}>Number of times you fly per year</Text>
           <TextInput style={styles.input} 
           placeholder="Enter number" 
           keyboardType="numeric" 
           placeholderTextColor="white"
+          Value={flightsPerYear}
+          onChangeText={newText => setFlightsPerYear(newText)}
           />
 
           <Text style={styles.label}>{label}</Text>
@@ -89,13 +125,28 @@ const SwipeableCard = ({ label }) => {
       {showForm && (
         <Animated.View style={[styles.formContainer, animatedFormStyle]}>
             <Text style={styles.cardText}>Type of energy used</Text>
-            <TextInput style={styles.input} placeholder="Enter type" placeholderTextColor="white"/>
+            <TextInput style={styles.input} 
+            placeholder="Enter type" 
+            placeholderTextColor="white"
+            Value={energyType}
+            onChangeText={newText => setEnergyType(newText)}
+            />
             <Text style={styles.cardText}>Diet preferences</Text>
-            <TextInput style={styles.input} placeholder="Enter Diet Plan" placeholderTextColor="white"/>
+            <TextInput style={styles.input} 
+            placeholder="Enter Diet Plan" 
+            placeholderTextColor="white"
+            Value={dietPreferences}
+            onChangeText={newText => setDietPreferences(newText)}
+            />
             <Text style={styles.cardText}>Do you recycle</Text>
-            <TextInput style={styles.input} placeholder="Enter yes/no" placeholderTextColor="white"/>
-            <Button title="Calculate
-            " onPress={() => console.log('Form submitted')} />
+            <TextInput style={styles.input} 
+            placeholder="Enter yes/no" 
+            placeholderTextColor="white"
+            Value={recycle}
+            onChangeText={newText => setRecycle(newText)}
+            />
+            <Button title="Calculate"
+              onPress={handleSubmit}  />
         </Animated.View>
       )}
     </View>
