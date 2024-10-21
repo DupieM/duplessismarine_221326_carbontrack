@@ -16,11 +16,30 @@ export const createUserInformation = async (info, uid) => {
 //Create new entry to track carbon footprint
 export const createNewEntry = async (formData, uid) => {
     try {
-        const docRef = await setDoc(doc(db, "carbon_footprints", uid), formData);
-        console.log("Carbon footprint data successfully written");
-    } catch (e) {
-        console.error("Error writing document: ", e);
-    }
+
+        // specifying where to add the entries
+        const userRef = doc(db, "users", uid) // adding specific doc's id
+
+        // specifying the subcollection we want to add
+        const entryRef = collection(userRef, "carbonFootprints")
+
+        // adding the document into this subcollection
+        const docRef = await addDoc(entryRef, formData)
+
+        console.log("Success adding doc with id:" + docRef.id)
+
+
+
+        // // Reference to the user's carbonFootprints subcollection
+        // const userRef = db.collection('users').doc(uid).collection('carbonFootprints');
+    
+        // // Add a new document with an auto-generated ID
+        // await userRef.add(formData);
+    
+        console.log("New carbon footprint entry added successfully!");
+      } catch (error) {
+        console.error("Error creating new carbon footprint entry: ", error);
+      }
 };
 
 //Get all the initiatives
