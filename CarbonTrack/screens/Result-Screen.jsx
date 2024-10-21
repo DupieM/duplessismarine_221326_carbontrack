@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, } from 'react-native'
 
 function  ResultScreen({ navigation }){
+
     return (
         <View style={styles.container}>
             <View style={styles.head}>

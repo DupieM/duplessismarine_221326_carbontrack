@@ -5,12 +5,13 @@ import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-na
 import { createNewEntry } from '../services/DbService';
 import { auth } from '../firebase';
 import { Dropdown } from 'react-native-element-dropdown';
+import { useNavigation } from '@react-navigation/native'; // Import this hook
 
 const cardData = [
   { id: 1, label: 'Swipe left to continue ' },
 ];
 
-function TrackerScreen() {
+function TrackerScreen({ navigation }) {
   return (
     <ScrollView>
       <GestureHandlerRootView style={styles.container}>
@@ -24,7 +25,7 @@ function TrackerScreen() {
         </View>
 
         {cardData.map((card) => (
-          <SwipeableCard key={card.id} label={card.label} />
+          <SwipeableCard key={card.id} label={card.label} navigation={navigation}/>
         ))}
       </GestureHandlerRootView>
     </ScrollView>
@@ -34,6 +35,7 @@ function TrackerScreen() {
 const SwipeableCard = ({ label }) => {
   const translateX = useSharedValue(0);
   const [showForm, setShowForm] = useState(false);
+  const navigation = useNavigation();
 
   //data for form
   const [householdOccupants, setHouseholdOccupants] = useState('');
@@ -86,6 +88,9 @@ const SwipeableCard = ({ label }) => {
       const uid = user.uid; // Get the logged-in user's UID
       await createNewEntry(formData, uid); // Store carbon footprint data under the specific user
       console.log("Form data submitted:", formData);
+
+      // Navigate to Results Screen and pass form data
+      navigation.navigate('Result');
     } else {
       console.error("No user is logged in.");
     }
@@ -100,10 +105,10 @@ const SwipeableCard = ({ label }) => {
   const [isFocus, setIsFocus] = useState(false);
 
   const data = [
-    { label: 'Petrol', value: 0 },
-    { label: 'Diesel', value: 3 },
-    { label: 'Electric', value: 5 },
-    { label: 'Hybrid', value: 6 }
+    { label: 'Petrol', value: 100},
+    { label: 'Diesel', value: 164 },
+    { label: 'Electric', value: 35.1 },
+    { label: 'Hybrid', value: 126.2 }
   ]
 
   //Dropdown box for energy used
@@ -181,7 +186,7 @@ const SwipeableCard = ({ label }) => {
           Value={kilometersTraveled}
           onChangeText={newText => setKilometersTraveled(newText)}
           />
-          <Text style={styles.cardText}>Number of times you fly per year</Text>
+          <Text style={styles.cardText}>How much kWh do you use</Text>
           <TextInput style={styles.input} 
           placeholder="Enter number" 
           keyboardType="numeric" 
@@ -302,7 +307,7 @@ const styles = StyleSheet.create({
       color: 'white',
     },
     swipeableContainer: {
-      marginBottom: 16
+      marginBottom: 40
     },
     card: {
       backgroundColor: '#55A545',
