@@ -24,3 +24,18 @@ export const createNewEntry = async (formData, uid) => {
 };
 
 //Get all the initiatives
+export const getMyIniatives = async () => {
+
+    var allIniatives = []
+
+    const querySnapshot = await getDocs(collection(db, "courses"));
+    querySnapshot.forEach((doc) => {
+        allIniatives.push({...doc.data(), id: doc.id}); //push each docs' data to the array I wnat to return
+        // console.log(doc.data())
+    });
+
+    return allIniatives
+
+};
+
+// Saving the answer of the cardbon footrack

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
-import { GestureHandlerRootView, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, TextInput, ScrollView, Button } from 'react-native';
+import { GestureHandlerRootView, PanGestureHandler, } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { createNewEntry } from '../services/DbService';
+import { auth } from '../firebase';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const cardData = [
   { id: 1, label: 'Swipe left to continue ' },
@@ -10,20 +12,22 @@ const cardData = [
 
 function TrackerScreen() {
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <View style={styles.head}>
-        <Text style={styles.mainhead}>Your Carbon</Text>
-        <Text style={styles.mainhead2}>Footprint</Text>
-      </View>
-      <View style={styles.subhead}>
-        <Text style={styles.subText}>Track your impact</Text>
-        <Text style={styles.subText}>on the environment</Text>
-      </View>
+    <ScrollView>
+      <GestureHandlerRootView style={styles.container}>
+        <View style={styles.head}>
+          <Text style={styles.mainhead}>Your Carbon</Text>
+          <Text style={styles.mainhead2}>Footprint</Text>
+        </View>
+        <View style={styles.subhead}>
+          <Text style={styles.subText}>Track your impact</Text>
+          <Text style={styles.subText}>on the environment</Text>
+        </View>
 
-      {cardData.map((card) => (
-        <SwipeableCard key={card.id} label={card.label} />
-      ))}
-    </GestureHandlerRootView>
+        {cardData.map((card) => (
+          <SwipeableCard key={card.id} label={card.label} />
+        ))}
+      </GestureHandlerRootView>
+    </ScrollView>
   );
 }
 
@@ -76,11 +80,63 @@ const SwipeableCard = ({ label }) => {
       recycle
     };
 
-    // Assuming you have a uid (user ID)
-    const uid = "some-unique-user-id"; // Replace with actual user ID
-    await createNewEntry(formData, uid);
-    console.log("Form data submitted:", formData);
+    const user = auth.currentUser;
+    if (user) {
+      const uid = user.uid; // Get the logged-in user's UID
+      await createNewEntry(formData, uid); // Store carbon footprint data under the specific user
+      console.log("Form data submitted:", formData);
+    } else {
+      console.error("No user is logged in.");
+    }
+
+    // const uid = "some-unique-user-id"; // Replace with actual user ID
+    // await createNewEntry(formData, uid);
+    // console.log("Form data submitted:", formData);
   };
+
+  //Dropdown box for transposrtation
+  const [value, setValue] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
+
+  const data = [
+    { label: 'Petrol', value: 0 },
+    { label: 'Diesel', value: 3 },
+    { label: 'Electric', value: 5 },
+    { label: 'Hybrid', value: 6 }
+  ]
+
+  //Dropdown box for energy used
+  const [valuetwo, setValueTwo] = useState(null);
+  const [isFocustwo, setIsFocusTwo] = useState(false);
+
+  const data_two = [
+    { label: 'Coal', value: 0.001 },
+    { label: 'Petroleum', value: 0.00096 },
+    { label: 'Natural Gas', value: 0.0004 },
+    { label: 'Solar', value: 0.000019 }
+  ]
+
+  //Dropdown box for diet
+  const [valuethree, setValueThree] = useState(null);
+  const [isFocusthree, setIsFocusThree] = useState(false);
+
+  const data_three = [
+    { label: 'Meat lover', value: 1.3 },
+    { label: 'Omnivore', value: 1.00 },
+    { label: 'No Beef', value: 0.79 },
+    { label: 'Vegatarian', value: 0.66 },
+    { label: 'vegan', value: 0.56 }
+  ]
+
+  //Dropdown box for recycle
+  const [valuefour, setValueFour] = useState(null);
+  const [isFocusfour, setIsFocusFour] = useState(false);
+
+  const data_four = [
+    { label: 'Yes', value: 'Yes' },
+    { label: 'No', value: 'No' }
+  ]
+
 
   return (
     <View style={styles.swipeableContainer}>
@@ -94,13 +150,28 @@ const SwipeableCard = ({ label }) => {
           Value={householdOccupants}
           onChangeText={newText => setHouseholdOccupants(newText)}
           />
-          <Text style={styles.cardText}>Type of Transport used</Text>
-          <TextInput style={styles.input} 
-          placeholder="Enter Transport Name" 
-          placeholderTextColor="white"
-          Value={transportUsed}
-          onChangeText={newText => setTransportUsed(newText)}
-          />
+          <View>
+            <Text style={styles.cardText}>Type of Transport used</Text>
+            <Dropdown
+              style={[styles.input]}
+              placeholderStyle={styles.placeholderStyle}
+              data={data}
+              maxHeight={300}
+              fontSize={50}
+              labelField="label"
+              valueField="value"
+              placeholder='Choose Transportation Type'
+              placeholderTextColor="white"
+              value={value}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={item => {
+                setValue(item.value);
+                setIsFocus(false);
+                setTransportUsed(item.value);
+              }}
+            />
+          </View>
           <Text style={styles.cardText}>Kilometers traveled per year</Text>
           <TextInput style={styles.input} 
           placeholder="Enter number" 
@@ -124,28 +195,73 @@ const SwipeableCard = ({ label }) => {
 
       {showForm && (
         <Animated.View style={[styles.formContainer, animatedFormStyle]}>
+          <View>
             <Text style={styles.cardText}>Type of energy used</Text>
-            <TextInput style={styles.input} 
-            placeholder="Enter type" 
-            placeholderTextColor="white"
-            Value={energyType}
-            onChangeText={newText => setEnergyType(newText)}
+            <Dropdown
+              style={[styles.input]}
+              placeholderStyle={styles.placeholderStyle}
+              data={data_two}
+              maxHeight={300}
+              fontSize={50}
+              labelField="label"
+              valueField="value"
+              placeholder='Choose Transportation Type'
+              placeholderTextColor="white"
+              value={valuetwo}
+              onFocus={() => setIsFocusTwo(true)}
+              onBlur={() => setIsFocusTwo(false)}
+              onChange={item => {
+                setValueTwo(item.value);
+                setIsFocusTwo(false);
+                setEnergyType(item.value);
+              }}
             />
+          </View> 
+          <View>
             <Text style={styles.cardText}>Diet preferences</Text>
-            <TextInput style={styles.input} 
-            placeholder="Enter Diet Plan" 
-            placeholderTextColor="white"
-            Value={dietPreferences}
-            onChangeText={newText => setDietPreferences(newText)}
+            <Dropdown
+              style={[styles.input]}
+              placeholderStyle={styles.placeholderStyle}
+              data={data_three}
+              maxHeight={300}
+              fontSize={50}
+              labelField="label"
+              valueField="value"
+              placeholder='Choose Transportation Type'
+              placeholderTextColor="white"
+              value={valuethree}
+              onFocus={() => setIsFocusThree(true)}
+              onBlur={() => setIsFocusThree(false)}
+              onChange={item => {
+                setValueThree(item.value);
+                setIsFocusThree(false);
+                setDietPreferences(item.value);
+              }}
             />
+          </View>
+          <View>
             <Text style={styles.cardText}>Do you recycle</Text>
-            <TextInput style={styles.input} 
-            placeholder="Enter yes/no" 
-            placeholderTextColor="white"
-            Value={recycle}
-            onChangeText={newText => setRecycle(newText)}
+            <Dropdown
+              style={[styles.input]}
+              placeholderStyle={styles.placeholderStyle}
+              data={data_four}
+              maxHeight={300}
+              fontSize={50}
+              labelField="label"
+              valueField="value"
+              placeholder='Choose Transportation Type'
+              placeholderTextColor="white"
+              value={valuefour}
+              onFocus={() => setIsFocusFour(true)}
+              onBlur={() => setIsFocusFour(false)}
+              onChange={item => {
+                setValueFour(item.value);
+                setIsFocusFour(false);
+                setRecycle(item.value);
+              }}
             />
-            <Button title="Calculate"
+          </View>
+          <Button title="Calculate"
               onPress={handleSubmit}  />
         </Animated.View>
       )}
@@ -184,15 +300,15 @@ const styles = StyleSheet.create({
       fontSize: 25,
       color: 'white',
     },
-    // swipeableContainer: {
-    //   flexDirection: 'row',
-    //   display: 'flex'
-    // },
+    swipeableContainer: {
+      marginBottom: 16
+    },
     card: {
       backgroundColor: '#55A545',
       padding: 13,
       borderRadius: 10,
       marginTop: 20,
+      marginRight: 10,
       width: 300,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
@@ -218,6 +334,7 @@ const styles = StyleSheet.create({
       right: 0,
       top: 0,
       bottom: 0,
+      left: 310,
       width: 300,
       backgroundColor: '#55A545',
       padding: 20,
@@ -250,4 +367,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#007541',
       color: 'white'
     },
+    placeholderStyle: {
+      color: 'white'
+    }
   });

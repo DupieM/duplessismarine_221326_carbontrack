@@ -85,7 +85,11 @@ export default function App() {
                   return (
                     <Image
                       style={{ width: size, height: size }}
-                      
+                      source={
+                        focused
+                          ? require('./assets/Tracker_Active.png')
+                          : require('./assets/Tracker_Inactive.png')
+                      }
                     />
                   );
                 },
