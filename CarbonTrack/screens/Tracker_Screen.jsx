@@ -71,13 +71,14 @@ const SwipeableCard = ({ label }) => {
   //to create enrty in database
   const handleSubmit = async () => {
     const formData = {
-      householdOccupants,
+      householdOccupants: parseInt(householdOccupants), // Convert to number
       transportUsed,
-      kilometersTraveled,
-      flightsPerYear,
+      kilometersTraveled: parseFloat(kilometersTraveled),  // Convert to float
+      flightsPerYear: parseInt(flightsPerYear), // Convert to float
       energyType,
       dietPreferences,
-      recycle
+      recycle,
+      timestamp: new Date().toISOString()
     };
 
     const user = auth.currentUser;
