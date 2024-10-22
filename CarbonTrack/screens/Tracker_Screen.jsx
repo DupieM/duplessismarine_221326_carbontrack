@@ -6,6 +6,7 @@ import { createNewEntry } from '../services/DbService';
 import { auth } from '../firebase';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native'; // Import this hook
+import axios from 'axios';
 
 const cardData = [
   { id: 1, label: 'Swipe left to continue ' },
@@ -41,7 +42,7 @@ const SwipeableCard = ({ label }) => {
   const [householdOccupants, setHouseholdOccupants] = useState('');
   const [transportUsed, setTransportUsed] = useState('');
   const [kilometersTraveled, setKilometersTraveled] = useState('');
-  const [flightsPerYear, setFlightsPerYear] = useState('');
+  const [watts, setWatts] = useState('');
   const [energyType, setEnergyType] = useState('');
   const [dietPreferences, setDietPreferences] = useState('');
   const [recycle, setRecycle] = useState('');
@@ -73,15 +74,26 @@ const SwipeableCard = ({ label }) => {
   //to create enrty in database
   const handleSubmit = async () => {
     const formData = {
-      householdOccupants: parseInt(householdOccupants), // Convert to number
-      transportUsed,
-      kilometersTraveled: parseFloat(kilometersTraveled),  // Convert to float
-      flightsPerYear: parseInt(flightsPerYear), // Convert to float
-      energyType,
-      dietPreferences,
+      householdOccupants: parseInt(householdOccupants), 
+      transportUsed: parseFloat(transportUsed),
+      kilometersTraveled: parseFloat(kilometersTraveled),
+      watts: parseInt(watts),
+      energyType: parseFloat(energyType),
+      dietPreferences: parseFloat(dietPreferences),
       recycle,
       timestamp: new Date().toISOString()
     };
+
+    try {
+      // Make a POST request to the Flask API
+      const response = await axios.post('http://localhost:5000/calculate', formData);
+      const carbonFootprint = response.data.carbonFootprint;
+  
+      // Handle the result (e.g., store it in Firebase or display it)
+      console.log('Calculated Carbon Footprint:', carbonFootprint);
+    } catch (error) {
+      console.error('Error calculating carbon footprint:', error);
+    }
 
     const user = auth.currentUser;
     if (user) {
