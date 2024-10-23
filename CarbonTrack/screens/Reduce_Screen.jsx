@@ -1,19 +1,56 @@
-import React from 'react'
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
+import axios from 'axios';
+import WebView from 'react-native-webview';
 
 function  ReduceScreen({}){
+
+    const [articles, setArticles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Function to fetch tips/articles from Google Custom Search API
+    const fetchArticles = async () => {
+        try {
+            const API_KEY = 'AIzaSyDee4LXB_QyZp2lI5QAx_EFKJ1xlvNEtlQ'; // Replace with your API key
+            const SEARCH_ENGINE_ID = '73cc8f35802a34a6a'; // Replace with your search engine ID
+            const query = 'how to reduce carbon footprint'; // Your search query
+
+            const response = await axios.get(
+                `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${query}`
+            );
+
+            setArticles(response.data.items); // Storing the fetched articles
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchArticles();
+    }, []);
+
     return (
         <View style={styles.container}>
             <View style={styles.head}>
                 <Text style={styles.mainhead}>Ways to reduce</Text>
                 <Text style={styles.mainhead2}>Carbon Footprint</Text>
             </View>
-            
-            <TouchableOpacity style={styles.cardone}>
-                <Text style={styles.cardparagrap}>
-                    Article Name and/or Link
-                </Text>
-            </TouchableOpacity>
+
+            {loading ? (
+                <ActivityIndicator size="large" color="#C1FF1C" />
+            ) : (
+                <ScrollView>
+                    {articles.map((article, index) => (
+                        <TouchableOpacity key={index} style={styles.cardone} onPress={() => Linking.openURL(article.link)}>
+                            <Text style={styles.cardparagrap}>
+                                {article.title}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            )}
             
         </View>
     )
@@ -29,7 +66,8 @@ const styles = StyleSheet.create({
     },
     head: {
         alignItems: 'center',
-        marginTop: 30
+        marginTop: 30,
+        marginBottom: 20
     },
     mainhead: {
         fontSize: 43,
@@ -53,7 +91,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: 27,
         height: 94,
-        marginTop: 25
+        marginBottom: 20
     },
     cardparagrap: {
         fontSize: 30,

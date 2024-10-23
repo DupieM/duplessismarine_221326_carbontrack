@@ -47,7 +47,7 @@ export const getMyIniatives = async () => {
 
     var allIniatives = []
 
-    const querySnapshot = await getDocs(collection(db, "courses"));
+    const querySnapshot = await getDocs(collection(db, "initiative"));
     querySnapshot.forEach((doc) => {
         allIniatives.push({...doc.data(), id: doc.id}); //push each docs' data to the array I wnat to return
         // console.log(doc.data())

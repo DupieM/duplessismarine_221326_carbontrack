@@ -7,10 +7,10 @@ function  InitiativeScreen({}){
 
     const [initiative, setInitiative] = useState([]);
 
-    // Fetch data 
-    useEffect(() => {
-        handleGettingOfData();
-    })
+    // Fetch data when screen is focused
+    useEffect(() => { 
+        handleGettingOfData()
+    }, [])
 
     const handleGettingOfData = async () => {
         var allData = await getMyIniatives()
