@@ -203,8 +203,8 @@ const SwipeableCard = ({ label }) => {
           placeholder="Enter number" 
           keyboardType="numeric" 
           placeholderTextColor="white"
-          Value={flightsPerYear}
-          onChangeText={newText => setFlightsPerYear(newText)}
+          Value={watts}
+          onChangeText={newText => setWatts(newText)}
           />
 
           <Text style={styles.label}>{label}</Text>
