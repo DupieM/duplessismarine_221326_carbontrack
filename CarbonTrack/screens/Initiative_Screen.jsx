@@ -2,10 +2,13 @@ import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, Button } from 'react-native'
 import { getMyIniatives } from '../services/DbService';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 function  InitiativeScreen({}){
 
     const [initiative, setInitiative] = useState([]);
+    const [selectedInitiative, setSelectedInitiative] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     // Fetch data when screen is focused
     const handleGettingOfData = async () => {
@@ -17,6 +20,11 @@ function  InitiativeScreen({}){
         handleGettingOfData()
     }, [])
 
+    // Function to handle showing the pop-up with details
+    const handleShowDetails = (initiative) => {
+        setSelectedInitiative(initiative);
+        setModalVisible(true);
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -27,7 +35,7 @@ function  InitiativeScreen({}){
                 {
                     initiative != [] ? (
                         initiative.map((initiative, index) => (
-                            <TouchableOpacity key={index} style={styles.cardone}>
+                            <TouchableOpacity key={index} style={styles.cardone} onPress={() => handleShowDetails(initiative)}>
                                 <Image style={styles.img} source={{uri: initiative.picture}}/>
                                 <View>
                                     <Text style={styles.cardparagrap}>{initiative.name}</Text>
@@ -41,6 +49,29 @@ function  InitiativeScreen({}){
                     )
                 }
             </View>
+
+            {/* Modal for displaying phone number and email */}
+            {selectedInitiative && (
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalView}>
+                    <View style={styles.iconRow}>
+                            <Icon name="phone" size={30} color="#C1FF1C" style={styles.icon} />
+                            <Text style={styles.modalText}>{selectedInitiative.phone_number}</Text>
+                        </View>
+                        <View style={styles.iconRow}>
+                            <Icon name="envelope" size={30} color="#C1FF1C" style={styles.icon} />
+                            <Text style={styles.modalText}>{selectedInitiative.email}</Text>
+                        </View>
+                        <Button title="Close" onPress={() => setModalVisible(false)} />
+                    </View>
+                </Modal>
+            )}
+
         </ScrollView>
     )
 }
@@ -103,4 +134,22 @@ const styles = StyleSheet.create({
         color: '#C1FF1C',
         marginTop: 10
     },
+    modalView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(48,48,49,0.85)',
+    },
+    modalText: {
+        fontSize: 20,
+        color: '#C1FF1C',
+        marginBottom: 20
+    },
+    iconRow: {
+        flexDirection: 'row',
+        marginBottom: 10
+    },
+    icon: {
+        marginRight: 20
+    }
 });
