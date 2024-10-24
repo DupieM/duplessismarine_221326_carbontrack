@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, Button } from 'react-native'
 import { getMyIniatives } from '../services/DbService';
 
 function  InitiativeScreen({}){
@@ -8,14 +8,15 @@ function  InitiativeScreen({}){
     const [initiative, setInitiative] = useState([]);
 
     // Fetch data when screen is focused
-    useEffect(() => { 
-        handleGettingOfData()
-    }, [])
-
     const handleGettingOfData = async () => {
         var allData = await getMyIniatives()
         setInitiative(allData)
     }
+
+    useEffect(() => { 
+        handleGettingOfData()
+    }, [])
+
 
     return (
         <ScrollView style={styles.container}>

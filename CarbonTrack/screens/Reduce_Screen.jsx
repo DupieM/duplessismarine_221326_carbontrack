@@ -16,7 +16,7 @@ function  ReduceScreen({}){
         try {
             const API_KEY = 'AIzaSyDee4LXB_QyZp2lI5QAx_EFKJ1xlvNEtlQ'; // Replace with your API key
             const SEARCH_ENGINE_ID = '73cc8f35802a34a6a'; // Replace with your search engine ID
-            const query = 'how to reduce carbon footprint'; // Your search query
+            const query = 'The best ways to reduce your carbon footprint'; // Your search query
 
             const response = await axios.get(
                 `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${query}`
@@ -135,10 +135,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalContent: {
-        backgroundColor: 'white',
+        backgroundColor: '#58BB44',
         borderRadius: 10,
-        padding: 20,
-        width: '90%',
-        height: '80%',
+        padding: 10,
+        width: '100%',
+        height: '90%',
     },
 });
