@@ -7,6 +7,8 @@ CORS(app)
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
+
+    print('loading...')
     data = request.get_json()
     householdOccupants = data['householdOccupants']
     transportUsed = data['transportUsed']
@@ -26,4 +28,4 @@ def calculate():
     return jsonify(result)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
