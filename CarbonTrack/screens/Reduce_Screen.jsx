@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Modal, Button, Linking } from 'react-native';
 import axios from 'axios';
 import WebView from 'react-native-webview';
+import { GOOGLE_API_KEY, SEARCH_ENGINE_ID } from '@env';
 
 function  ReduceScreen({}){
 
@@ -14,12 +15,9 @@ function  ReduceScreen({}){
     // Function to fetch tips/articles from Google Custom Search API
     const fetchArticles = async () => {
         try {
-            const API_KEY = 'AIzaSyDee4LXB_QyZp2lI5QAx_EFKJ1xlvNEtlQ'; // Replace with your API key
-            const SEARCH_ENGINE_ID = '73cc8f35802a34a6a'; // Replace with your search engine ID
             const query = 'The best ways to reduce your carbon footprint'; // Your search query
-
             const response = await axios.get(
-                `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${query}`
+                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${query}`
             );
 
             setArticles(response.data.items); // Storing the fetched articles

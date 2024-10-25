@@ -40,8 +40,8 @@ function  SignUpScreen({}){
 
     return (
         <ScrollView style={styles.container}>
-            <ImageBackground source={require('../assets/Auth_Picture_1.png')} style={styles.img}>
-                <View style={styles.card}>
+            <ImageBackground source={require('../assets/SignUp.png')} style={styles.img}>
+                <View>
                     <Text style={styles.mainhead}>Sign Up</Text>
                     <View>
                         <TextInput style={styles.input} placeholder='Username'
@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
         height: 470
     },
     mainhead: {
-        marginTop: 5,
-        fontSize: 53,
+        marginTop: 190,
+        fontSize: 65,
         textAlign: 'center',
-        color: '#343436',
+        color: 'white',
         fontWeight: 'bold',
     },
     input: {
@@ -118,10 +118,10 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 27,
         fontSize: 15,
-        color: '#343436'
+        color: '#9BE931'
     },
     Btn: {
-        backgroundColor: '#007541',
+        backgroundColor: '#58BB44',
         width: 200,
         marginLeft: 85,
         padding: 6,
@@ -132,6 +132,6 @@ const styles = StyleSheet.create({
         fontSize: 33,
         fontWeight: '700',
         textAlign: 'center',
-        color: '#9BE931'
+        color: '#303031'
     },
 })

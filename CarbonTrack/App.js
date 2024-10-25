@@ -15,6 +15,7 @@ import { auth } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import ResultScreen from './screens/Result-Screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ChoosingScreen from './screens/Choosing_Screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -156,7 +157,8 @@ export default function App() {
         </NavigationContainer>
       ) : (
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+          <Stack.Navigator initialRouteName="Choose" screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Choose" component={ChoosingScreen}/>
             <Stack.Screen name="Login" component={LogInScreen}/>
             <Stack.Screen name="SignUp" component={SignUpScreen}/>
           </Stack.Navigator>

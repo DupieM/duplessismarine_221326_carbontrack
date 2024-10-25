@@ -35,8 +35,8 @@ function  LogInScreen({ navigation }){
 
     return (
         <ScrollView style={styles.container}>
-            <ImageBackground source={require('../assets/Auth_Picture_1.png')} style={styles.img}>
-                <View style={styles.card}>
+            <ImageBackground source={require('../assets/Login.png')} style={styles.img}>
+                <View>
                     <Text style={styles.mainhead}>Log In</Text>
                     <View>
                         <TextInput style={styles.input} placeholder='Email'
@@ -55,14 +55,6 @@ function  LogInScreen({ navigation }){
                     <View>
                         <TouchableOpacity style={styles.Btn} onPress={login}>
                             <Text style={styles.Btntext}>Proceed</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.signupcontainer}>
-                        <Text style={styles.signup}>
-                            Don't have an account?
-                        </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                            <Text style={styles.link}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -92,10 +84,10 @@ const styles = StyleSheet.create({
         height: 420
     },
     mainhead: {
-        marginTop: 5,
-        fontSize: 53,
+        marginTop: 120,
+        fontSize: 65,
         textAlign: 'center',
-        color: '#343436',
+        color: 'white',
         fontWeight: 'bold',
     },
     input: {
@@ -114,11 +106,11 @@ const styles = StyleSheet.create({
         marginLeft: 50,
         marginTop: 5,
         marginBottom: 27,
-        fontSize: 15,
-        color: '#343436'
+        fontSize: 17,
+        color: '#9BE931'
     },
     Btn: {
-        backgroundColor: '#007541',
+        backgroundColor: '#58BB44',
         width: 200,
         marginLeft: 85,
         padding: 6,
@@ -126,10 +118,10 @@ const styles = StyleSheet.create({
         marginBottom: 25
     },
     Btntext: {
-        fontSize: 33,
+        fontSize: 35,
         fontWeight: '700',
         textAlign: 'center',
-        color: '#9BE931'
+        color: '#303031'
     },
     signupcontainer: {
         flexDirection: 'row',

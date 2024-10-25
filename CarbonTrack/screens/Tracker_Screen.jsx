@@ -7,6 +7,7 @@ import { auth } from '../firebase';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native'; // Import this hook
 import axios from 'axios';
+import { calculateCarbonFootprint } from '../sub-services/calculation';
 
 const cardData = [
   { id: 1, label: 'Swipe left to continue ' },
@@ -85,9 +86,6 @@ const SwipeableCard = ({ label }) => {
     };
 
     try {
-      // Make a POST request to the Flask API
-      // const response = await axios.post('http://localhost:5000/calculate', formData);
-      // const carbonFootprint = response.data.carbonFootprint;
 
       const carbonFootprint = calculateCarbonFootprint(formData)
   
@@ -156,39 +154,6 @@ const SwipeableCard = ({ label }) => {
     { label: 'Yes', value: 'Yes' },
     { label: 'No', value: 'No' }
   ]
-
-
-  const calculateCarbonFootprint = (
-    {householdOccupants,
-    transportUsed,
-    kilometersTraveled,
-    watts,
-    energyType,
-    dietPreferences,
-    recycle}
-  ) => {
-    // Carbon footprint factors (these are approximate and should be adjusted for your needs)
-  
-    // Emission factor per person
-    const householdEmission = householdOccupants * 1.5;
-  
-    // Emission from transportation
-    const transportEmission = kilometersTraveled * transportUsed;
-  
-    // Emission from energy usage
-    const energyEmission = watts * energyType;
-  
-    // Emission factor for diet
-    const dietEmission = dietPreferences * 365;
-  
-    // Recycling reduces emissions by 5% if "Yes"
-    const recycleEmission = recycle === "Yes" ? -0.05 : 0;
-  
-    // Total carbon footprint in tonnes/year
-    const totalEmission = householdEmission + transportEmission + energyEmission + dietEmission + recycleEmission;
-  
-    return totalEmission;
-  };
 
   return (
     <View style={styles.swipeableContainer}>
