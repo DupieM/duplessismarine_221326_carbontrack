@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, ScrollView, Button } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { createNewEntry } from '../services/DbService';
+import { createNewEntry, saveCalculationAnswer } from '../services/DbService';
 import { auth } from '../firebase';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native'; // Import this hook
@@ -86,30 +86,33 @@ const SwipeableCard = ({ label }) => {
     };
 
     try {
-
-      const carbonFootprint = calculateCarbonFootprint(formData)
+      const carbonFootprint = calculateCarbonFootprint(formData);
   
-      // Handle the result (e.g., store it in Firebase or display it)
-      console.log('Calculated Carbon Footprint:', carbonFootprint);
+      const user = auth.currentUser;
+      if (user) {
+        const uid = user.uid;
+        const carbonFootprintId = await createNewEntry(formData, uid);
+  
+        // Check that we have a valid ID before proceeding
+        if (carbonFootprintId) {
+          await saveCalculationAnswer(uid, carbonFootprintId, { 
+            result: carbonFootprint, 
+            timestamp: new Date().toISOString() 
+          });
+          console.log('Form data and calculation answer submitted:', formData);
+  
+          // Navigate to Results Screen if successful
+          navigation.navigate('Result');
+        } else {
+          console.error('Failed to get carbonFootprint ID');
+        }
+      } else {
+        console.error('No user is logged in.');
+      }
     } catch (error) {
-      console.error('Error calculating carbon footprint:', error);
+      console.error('Error calculating or saving carbon footprint:', error);
     }
 
-    const user = auth.currentUser;
-    if (user) {
-      const uid = user.uid; // Get the logged-in user's UID
-      await createNewEntry(formData, uid); // Store carbon footprint data under the specific user
-      console.log("Form data submitted:", formData);
-
-      // Navigate to Results Screen and pass form data
-      navigation.navigate('Result');
-    } else {
-      console.error("No user is logged in.");
-    }
-
-    // const uid = "some-unique-user-id"; // Replace with actual user ID
-    // await createNewEntry(formData, uid);
-    // console.log("Form data submitted:", formData);
   };
 
   //Dropdown box for transposrtation
