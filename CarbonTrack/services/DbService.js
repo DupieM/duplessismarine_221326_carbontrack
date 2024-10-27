@@ -14,7 +14,7 @@ export const createUserInformation = async (info, uid) => {
 };
 
 //Create new entry to track carbon footprint
-export const createNewEntry = async (formData, uid) => {
+export const createNewEntry = async (formData, carbonFootprint, uid) => {
     try {
 
         // specifying where to add the entries
@@ -57,25 +57,7 @@ export const getMyIniatives = async () => {
 
 };
 
-// getting phone number and email from initiatives
-// export const getInitiativeDetails = async (initiativeId) => {
-//     try {
-//         const initiativeDoc = await firestore.collection('initiative').doc(initiativeId).get();
-        
-//         if (initiativeDoc.exists) {
-//             const data = initiativeDoc.data();
-//             return {
-//                 phone: data.phone, // Ensure the document contains 'phone'
-//                 email: data.email  // Ensure the document contains 'email'
-//             };
-//         } else {
-//             console.error('No such document!');
-//             return { phone: '', email: '' };
-//         }
-//     } catch (error) {
-//         console.error('Error getting initiative details:', error);
-//         return { phone: '', email: '' }; // Return default values in case of error
-//     }
-// };
-
 // Saving the answer of the cardbon footrack
+export const createRecordingOfCarbonFootprint = async () => {
+
+};

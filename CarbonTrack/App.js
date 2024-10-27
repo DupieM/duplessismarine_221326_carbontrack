@@ -13,7 +13,7 @@ import InitiativeScreen from './screens/Initiative_Screen';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import ResultScreen from './screens/Result-Screen';
+import ResultScreen from './screens/Result_Screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ChoosingScreen from './screens/Choosing_Screen';
 

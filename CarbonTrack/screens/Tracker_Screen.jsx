@@ -117,7 +117,7 @@ const SwipeableCard = ({ label }) => {
   const [isFocus, setIsFocus] = useState(false);
 
   const data = [
-    { label: 'Petrol', value: 100},
+    { label: 'Petrol', value: 100 },
     { label: 'Diesel', value: 164 },
     { label: 'Electric', value: 35.1 },
     { label: 'Hybrid', value: 126.2 }

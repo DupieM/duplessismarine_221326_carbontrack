@@ -7,7 +7,7 @@ function  ResultScreen({ navigation }){
         <View style={styles.container}>
             <View style={styles.head}>
                 <Text style={styles.mainhead}>Your Carbon</Text>
-                <Text style={styles.mainhead2}>Footprint is</Text>
+                <Text style={styles.mainhead2}>Footprint</Text>
             </View>
             <View>
                 <Text style={styles.graph}>Graph</Text>
