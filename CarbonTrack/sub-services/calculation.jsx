@@ -27,7 +27,9 @@ export const calculateCarbonFootprint = (
   
     // Total carbon footprint in tonnes/year
     // const totalEmission = transportEmission;
-    const totalEmission = householdEmission + transportEmission + energyEmission + dietEmission + recycleEmission;
+    const totalEmission = parseFloat(
+      (householdEmission + transportEmission + energyEmission + dietEmission + recycleEmission).toFixed(2)
+    );
   
-    return totalEmission;
+    return {totalEmission, householdEmission, transportEmission, energyEmission, dietEmission};
 };
