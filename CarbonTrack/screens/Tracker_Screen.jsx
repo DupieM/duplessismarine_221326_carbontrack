@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, Button, Modal } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { createNewEntry, saveCalculationAnswer } from '../services/DbService';
@@ -37,6 +37,8 @@ function TrackerScreen({ navigation }) {
 const SwipeableCard = ({ label }) => {
   const translateX = useSharedValue(0);
   const [showForm, setShowForm] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [totalEmissions, setTotalEmissions] = useState(null);
   const navigation = useNavigation();
 
   //data for form
@@ -87,6 +89,9 @@ const SwipeableCard = ({ label }) => {
 
     try {
       const carbonFootprint = calculateCarbonFootprint(formData);
+
+      setTotalEmissions(carbonFootprint.totalEmission); // Set total emissions
+      setModalVisible(true); // Show modal
   
       const user = auth.currentUser;
       if (user) {
@@ -101,8 +106,6 @@ const SwipeableCard = ({ label }) => {
           });
           console.log('Form data and calculation answer submitted:', formData);
   
-          // Navigate to Results Screen if successful
-          navigation.navigate('Result');
         } else {
           console.error('Failed to get carbonFootprint ID');
         }
@@ -113,6 +116,11 @@ const SwipeableCard = ({ label }) => {
       console.error('Error calculating or saving carbon footprint:', error);
     }
 
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    navigation.navigate('Result'); // Navigate to Result screen after closing modal
   };
 
   //Dropdown box for transposrtation
@@ -285,6 +293,23 @@ const SwipeableCard = ({ label }) => {
               onPress={handleSubmit}  />
         </Animated.View>
       )}
+
+      {/* Modal for displaying total emissions */}
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Total Emissions</Text>
+            <Text style={styles.modalText}>{totalEmissions} ton CO2</Text>
+            <Button title="Close" onPress={handleCloseModal} />
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 };
@@ -389,5 +414,9 @@ const styles = StyleSheet.create({
     },
     placeholderStyle: {
       color: 'white'
-    }
+    },
+    modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
+  modalContent: { width: '80%', padding: 20, backgroundColor: 'white', borderRadius: 10, alignItems: 'center' },
+  modalTitle: { fontSize: 24, fontWeight: 'bold' },
+  modalText: { fontSize: 20, marginVertical: 10 },
   });

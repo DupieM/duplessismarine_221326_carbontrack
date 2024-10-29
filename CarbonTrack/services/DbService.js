@@ -71,20 +71,24 @@ export const saveCalculationAnswer = async (uid, carbonFootprintId, answerData) 
       console.error('Error saving calculation answer:', error);
     }
   };
-// export const saveCalculationAnswer = async (uid, carbonFootprintId, answerData) => {
-//     try {
-//         // Reference to the specific carbonFootprint document inside user's carbonFootprints subcollection
-//         const carbonFootprintRef = doc(db, "users", uid, "carbonFootprints", carbonFootprintId);
 
-//         // Reference to the answers subcollection inside the specific carbonFootprint document
-//         const answerRef = collection(carbonFootprintRef, "answers");
+// Retrieve the answers to make charts
+export const getAnswers = async (uid, carbonFootprintIds) => {
+  try {
+    const allAnswers = [];
 
-//         // Add the calculated answer data to the answers subcollection
-//         await addDoc(answerRef, answerData);
+    // Loop through each carbon footprint ID and fetch the answers
+    for (const carbonFootprintId of carbonFootprintIds) {
+        const answersRef = collection(db, 'users', uid, 'carbonFootprints', carbonFootprintId, 'answers');
+        const querySnapshot = await getDocs(answersRef);
 
-//         console.log("Answer successfully added to the answers subcollection!");
-//     } catch (error) {
-//         console.error("Error saving calculation answer: ", error);
-//         throw error;
-//     }
-// };
+        querySnapshot.forEach((doc) => {
+            allAnswers.push({ ...doc.data(), id: doc.id, carbonFootprintId }); // Include the carbon footprint ID in the data
+        });
+    }
+
+      return allAnswers; // Return the array of answers
+  } catch (error) {
+      console.error('Error retrieving answers:', error);
+  }
+};
