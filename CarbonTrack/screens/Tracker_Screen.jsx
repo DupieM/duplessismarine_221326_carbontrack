@@ -39,6 +39,7 @@ const SwipeableCard = ({ label }) => {
   const [showForm, setShowForm] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [totalEmissions, setTotalEmissions] = useState(null);
+  const [carbonFootprintData, setCarbonFootprintData] = useState(null);
   const navigation = useNavigation();
 
   //data for form
@@ -92,6 +93,9 @@ const SwipeableCard = ({ label }) => {
 
       setTotalEmissions(carbonFootprint.totalEmission); // Set total emissions
       setModalVisible(true); // Show modal
+
+      // Store the carbonFootprint data for use after closing the pop-up
+      setCarbonFootprintData(carbonFootprint);
   
       const user = auth.currentUser;
       if (user) {
@@ -120,7 +124,7 @@ const SwipeableCard = ({ label }) => {
 
   const handleCloseModal = () => {
     setModalVisible(false);
-    navigation.navigate('Result'); // Navigate to Result screen after closing modal
+    navigation.navigate('Result', { carbonFootprint: carbonFootprintData }); // Navigate to Result screen after closing modal
   };
 
   //Dropdown box for transposrtation
