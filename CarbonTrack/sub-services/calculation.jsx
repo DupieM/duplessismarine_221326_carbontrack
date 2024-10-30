@@ -11,16 +11,16 @@ export const calculateCarbonFootprint = (
     // Carbon footprint factors (these are approximate and should be adjusted for your needs)
   
     // Emission factor per person
-    const householdEmission = householdOccupants * 0.91;
+    const householdEmission = parseFloat((householdOccupants * 0.91).toFixed(1));
   
     // Emission from transportation
-    const transportEmission = (kilometersTraveled * transportUsed)/1000000;
+    const transportEmission = parseFloat(((kilometersTraveled * transportUsed)/1000000).toFixed(1));
   
     // Emission from energy usage
-    const energyEmission = watts * energyType;
+    const energyEmission = parseFloat((watts * energyType).toFixed(1));
   
     // Emission factor for diet
-    const dietEmission = dietPreferences * 1; 
+    const dietEmission = parseFloat((dietPreferences * 1).toFixed(1)); 
 
     // Recycling reduces emissions by 5% if "Yes"
     const recycleEmission = recycle === "Yes" ? -0.05 : 0;
