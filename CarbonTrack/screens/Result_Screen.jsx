@@ -1,9 +1,86 @@
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native'
+import { getAnswers } from '../services/DbService';
+import { auth, db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 function  ResultScreen({ navigation, route }){
 
     const { carbonFootprint } = route.params;
+    const [totalEmissions, setTotalEmissions] = useState([]);
+    const [carbonFootprints, setCarbonFootprints] = useState([]);
+
+    const [carbonFootprintIds, setCarbonFootprintIds] = useState([]);
+
+    const [answers, setAnswers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const fetchYourCarbonFootprintIds = async (uid) => {
+        if (!uid) {
+          console.error('UID is missing. Cannot fetch carbon footprint IDs.');
+          return [];
+        }
+    
+        try {
+          const carbonFootprintsRef = collection(db, 'users', uid, 'carbonFootprints');
+          const querySnapshot = await getDocs(carbonFootprintsRef);
+          const ids = querySnapshot.docs.map(doc => doc.id); // Get the document IDs
+          console.log("Fetched Carbon Footprint IDs:", ids); // Debugging line
+          return ids; // Return an array of IDs
+        } catch (error) {
+          console.error('Error fetching carbon footprint IDs:', error);
+          return []; // Return an empty array on error
+        }
+    };
+
+    useEffect(() => {
+        const fetchCarbonFootprintIds = async () => {
+          const uid = auth.currentUser?.uid; // Get the current user's UID
+          const ids = await fetchYourCarbonFootprintIds(uid);
+          setCarbonFootprintIds(ids);
+        };
+    
+        fetchCarbonFootprintIds();
+      }, []);
+    
+      useEffect(() => {
+        const fetchData = async () => {
+          const uid = auth.currentUser?.uid; // Get the current user's UID
+          
+          if (!uid) {
+            console.error("UID is missing. User might not be logged in.");
+            setError("User not logged in");
+            setLoading(false);
+            return;
+          }
+    
+          try {
+            const retrievedAnswers = await getAnswers(uid, carbonFootprintIds);
+            setAnswers(retrievedAnswers);
+          } catch (err) {
+            console.error("Error retrieving answers:", err);
+            setError("Error retrieving answers");
+          } finally {
+            setLoading(false); // Set loading to false once data fetching is complete
+          }
+        };
+    
+        fetchData();
+      }, [carbonFootprintIds]); // Add carbonFootprintIds as a dependency to refetch answers when they change
+    
+      useEffect(() => {
+        console.log("Retrieved answers:", answers);
+    }, [answers]);
+
+      if (loading) {
+        return <ActivityIndicator size="large" color="#0000ff" />;
+      }
+    
+      if (error) {
+        return <Text>Error: {error}</Text>;
+      }
+
 
     // Extract emissions data
     const { householdEmission, transportEmission, energyEmission, dietEmission } = carbonFootprint;
@@ -17,9 +94,10 @@ function  ResultScreen({ navigation, route }){
     ];
     console.log("Emissions Data:", emissionsData);
 
+    //Quickchart url for chart one
 
 
-    //Quickchart url
+    //Quickchart url for chart two
     const chartConfig = {
         type: 'polarArea',
         data: {
@@ -71,13 +149,28 @@ function  ResultScreen({ navigation, route }){
     const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.head}>
                 <Text style={styles.mainhead}>Your Carbon</Text>
                 <Text style={styles.mainhead2}>Footprint</Text>
             </View>
             <View>
                 <Text style={styles.graph}>Graph</Text>
+                <View>
+                    <Text>Results:</Text>
+                    {answers.length > 0 ? (
+                        answers.map((answer) => (
+                            console.log("Answer:", answer),
+                     
+                            <View key={answer.id}>
+                                <Text>Total Emission: {answer.totalEmission !== undefined ? answer.totalEmission : "N/A"} tons of CO₂</Text>
+                                {/* Render other answer properties as needed */}
+                            </View>
+                        ))
+                    ) : (
+                        <Text>No answers found.</Text>
+                    )}
+                </View>
             </View>
             <View>
                 <Image
@@ -85,6 +178,7 @@ function  ResultScreen({ navigation, route }){
                     source={{ uri: chartUrl }}
                     resizeMode="contain"
                 />
+                <Text style={styles.graph}>Graph</Text>
             </View>
             <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce')}>
                 <Text style={styles.cardparagrap2}>
@@ -93,7 +187,7 @@ function  ResultScreen({ navigation, route }){
                 </Text>
                 <Image style={styles.tips} source={require('../assets/Tips.png')}/>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -103,7 +197,6 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#007541',
-      alignItems: 'center',
     },
     head: {
         alignItems: 'center',

@@ -79,16 +79,44 @@ export const getAnswers = async (uid, carbonFootprintIds) => {
 
     // Loop through each carbon footprint ID and fetch the answers
     for (const carbonFootprintId of carbonFootprintIds) {
-        const answersRef = collection(db, 'users', uid, 'carbonFootprints', carbonFootprintId, 'answers');
-        const querySnapshot = await getDocs(answersRef);
+      const answersRef = collection(db, 'users', uid, 'carbonFootprints', carbonFootprintId, 'answers');
+      const querySnapshot = await getDocs(answersRef);
 
-        querySnapshot.forEach((doc) => {
-            allAnswers.push({ ...doc.data(), id: doc.id, carbonFootprintId }); // Include the carbon footprint ID in the data
-        });
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        // Check if totalEmission exists; if not, set it to null or a default value
+        const totalEmission = data.totalEmission !== undefined ? data.totalEmission : null;
+
+        allAnswers.push({ ...data, id: doc.id, carbonFootprintId, totalEmission });
+      });
     }
 
-      return allAnswers; // Return the array of answers
+    return allAnswers; // Return the array of answers
   } catch (error) {
-      console.error('Error retrieving answers:', error);
+    console.error('Error retrieving answers:', error);
   }
 };
+
+
+// export const getAnswers = async (uid, carbonFootprintIds) => {
+//   try {
+//     const totalEmissions = []; // Array to store totalEmission values
+
+//     for (const carbonFootprintId of carbonFootprintIds) {
+//       const answersRef = collection(db, 'users', uid, 'carbonFootprints', carbonFootprintId, 'answers');
+//       const querySnapshot = await getDocs(answersRef);
+
+//       // Loop through each document in the 'answers' subcollection
+//       querySnapshot.forEach((doc) => {
+//         const data = doc.data();
+//         if (data.totalEmission) { // Check if totalEmission exists
+//           totalEmissions.push({ carbonFootprintId, totalEmission: data.totalEmission });
+//         }
+//       });
+//     }
+
+//     return totalEmissions; // Return the array of totalEmission values
+//   } catch (error) {
+//     console.error('Error retrieving totalEmission values:', error);
+//   }
+// };

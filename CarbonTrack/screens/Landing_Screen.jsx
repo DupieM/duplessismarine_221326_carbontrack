@@ -4,10 +4,10 @@ import { handleSignOut } from '../services/authService'
 
 function  LandingScreen({ navigation }){
 
-// Logout
-const handleSignout = () => {
-    handleSignOut()
-}
+    // Logout
+    const handleSignout = () => {
+        handleSignOut()
+    }
 
     return (
         <ScrollView style={styles.container}>
