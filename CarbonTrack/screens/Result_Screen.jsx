@@ -7,11 +7,7 @@ import { collection, getDocs } from 'firebase/firestore';
 function  ResultScreen({ navigation, route }){
 
     const { carbonFootprint } = route.params;
-    const [totalEmissions, setTotalEmissions] = useState([]);
-    const [carbonFootprints, setCarbonFootprints] = useState([]);
-
     const [carbonFootprintIds, setCarbonFootprintIds] = useState([]);
-
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -81,6 +77,66 @@ function  ResultScreen({ navigation, route }){
         return <Text>Error: {error}</Text>;
       }
 
+    const totalEmissions = answers
+        .map(answer => answer.result?.totalEmission)
+        .filter(emission => emission !== undefined);
+
+    // Format dates and create labels array
+    const dateLabels = answers.map(answer => {
+        const date = new Date(answer.timestamp);
+        return date.toLocaleDateString(undefined, { month: '2-digit', year: '2-digit' }); // Formats to 'MM/DD/YYYY' or similar based on locale
+    });
+
+    //Quickchart url for chart one
+    const barChartConfig = {
+        type: 'bar', 
+        data: {
+            labels: dateLabels,
+            datasets: [{
+                label: 'Total CO2',
+                data: totalEmissions,
+                backgroundColor: 'rgba(75, 192, 192, 0.9)', // Bar color
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: 'white', // Y-axis text color
+                        callback: function(value) { return `${value} CO₂`; }
+                    },
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontColor: 'white' // X-axis text color
+                    },
+                }]
+            },
+            title: {
+                display: true,
+                text: 'Your Emissions Over Time',
+                fontSize: 20,
+                fontColor: 'white' // Title text color
+            },
+            legend: {
+                labels: {
+                    fontColor: 'white' // Legend text color
+                }
+            },
+            tooltips: {
+                titleFontColor: 'white',
+                bodyFontColor: 'white',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                borderColor: 'white',
+                borderWidth: 1
+            }
+        }
+    };
+    
+    const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(barChartConfig))}`;
 
     // Extract emissions data
     const { householdEmission, transportEmission, energyEmission, dietEmission } = carbonFootprint;
@@ -93,9 +149,6 @@ function  ResultScreen({ navigation, route }){
         dietEmission || 0,
     ];
     console.log("Emissions Data:", emissionsData);
-
-    //Quickchart url for chart one
-
 
     //Quickchart url for chart two
     const chartConfig = {
@@ -155,26 +208,17 @@ function  ResultScreen({ navigation, route }){
                 <Text style={styles.mainhead2}>Footprint</Text>
             </View>
             <View>
-                <Text style={styles.graph}>Graph</Text>
                 <View>
-                    <Text>Results:</Text>
-                    {answers.length > 0 ? (
-                        answers.map((answer) => (
-                            console.log("Answer:", answer),
-                     
-                            <View key={answer.id}>
-                                <Text>Total Emission: {answer.totalEmission !== undefined ? answer.totalEmission : "N/A"} tons of CO₂</Text>
-                                {/* Render other answer properties as needed */}
-                            </View>
-                        ))
-                    ) : (
-                        <Text>No answers found.</Text>
-                    )}
+                    <Image
+                        style={styles.chartImage}
+                        source={{ uri: barChartUrl }}
+                        resizeMode="contain"
+                    />
                 </View>
             </View>
             <View>
                 <Image
-                    style={styles.chartImage}
+                    style={styles.chartImageTwo}
                     source={{ uri: chartUrl }}
                     resizeMode="contain"
                 />
@@ -220,9 +264,15 @@ const styles = StyleSheet.create({
         color: '#438EF3'
     },
     chartImage: {
-        marginLeft: 25,
+        marginLeft: 3,
+        width: 350,
+        height: 250,
+    },
+    chartImageTwo: {
+        marginLeft: -4,
         width: 400,
         height: 300,
+        marginTop: -38
     },
     cardone: {
         backgroundColor: '#3AA345',
@@ -234,7 +284,8 @@ const styles = StyleSheet.create({
         paddingRight: 15,
         flexDirection: 'row',
         marginLeft: 27,
-        height: 94
+        height: 94,
+        marginBottom: 20
     },
     cardparagrap2: {
         fontSize: 30,

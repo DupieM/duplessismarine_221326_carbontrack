@@ -1,4 +1,3 @@
-
 export const calculateCarbonFootprint = (
     {householdOccupants,
     transportUsed,
