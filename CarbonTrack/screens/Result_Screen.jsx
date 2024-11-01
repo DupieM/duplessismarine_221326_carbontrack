@@ -3,14 +3,34 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIn
 import { getAnswers } from '../services/DbService';
 import { auth, db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { getEmissionInsights } from '../OpenAIService';
 
-function  ResultScreen({ navigation, route }){
+function  ResultScreen({ navigation, route, emissionData }){
 
     const { carbonFootprint } = route.params;
     const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [insights, setInsights] = useState("");
+    const [emissionInsights, setEmissionInsights] = useState('');
+
+    console.log("Emission Data:", emissionData);
+    // useEffect(() => {
+    //     const fetchInsights = async () => {
+    //         try {
+    //             const fetchedInsights = await getEmissionInsights(emissionData);
+    //             setInsights(fetchedInsights);
+    //         } catch (err) {
+    //             setError(err.message);
+    //             console.error(err);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchInsights();
+    // }, [emissionData]);
 
 
     const fetchYourCarbonFootprintIds = async (uid) => {
@@ -62,7 +82,7 @@ function  ResultScreen({ navigation, route }){
         }
     }, [carbonFootprintIds]);
     
-      useEffect(() => {
+    useEffect(() => {
         console.log("Retrieved answers:", answers);
     }, [answers]);
 
@@ -143,7 +163,7 @@ function  ResultScreen({ navigation, route }){
         energyEmission || 0,
         dietEmission || 0,
     ];
-    console.log("Emissions Data:", emissionsData);
+    // console.log("Emissions Data:", emissionsData);
 
     //Quickchart url for chart two
     const chartConfig = {
@@ -216,7 +236,10 @@ function  ResultScreen({ navigation, route }){
                     source={{ uri: chartUrl }}
                     resizeMode="contain"
                 />
-                <Text style={styles.graph}>Graph</Text>
+            </View>
+            <View>
+                <Text>Emission Insights:</Text>
+                <Text>{insights}</Text>
             </View>
             <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce')}>
                 <Text style={styles.cardparagrap2}>
