@@ -16,21 +16,21 @@ function  ResultScreen({ navigation, route, emissionData }){
     const [emissionInsights, setEmissionInsights] = useState('');
 
     console.log("Emission Data:", emissionData);
-    // useEffect(() => {
-    //     const fetchInsights = async () => {
-    //         try {
-    //             const fetchedInsights = await getEmissionInsights(emissionData);
-    //             setInsights(fetchedInsights);
-    //         } catch (err) {
-    //             setError(err.message);
-    //             console.error(err);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchInsights = async () => {
+            try {
+                const fetchedInsights = await getEmissionInsights(emissionData);
+                setInsights(fetchedInsights);
+            } catch (err) {
+                setError(err.message);
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    //     fetchInsights();
-    // }, [emissionData]);
+        fetchInsights();
+    }, [emissionData]);
 
 
     const fetchYourCarbonFootprintIds = async (uid) => {
