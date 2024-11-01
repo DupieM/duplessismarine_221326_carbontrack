@@ -1,6 +1,9 @@
-import React from 'react'
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { handleSignOut } from '../services/authService'
+import { getAnswers } from '../services/DbService'
+import { auth, db } from '../firebase'
+import { collection, getDocs } from 'firebase/firestore'
 
 function  LandingScreen({ navigation }){
 
@@ -8,6 +11,128 @@ function  LandingScreen({ navigation }){
     const handleSignout = () => {
         handleSignOut()
     }
+
+    const [averageEmission, setAverageEmission] = useState(null);
+    const globalAverage = 4.7;
+    const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
+    const [answers, setAnswers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const fetchYourCarbonFootprintIds = async (uid) => {
+        if (!uid) {
+          console.error('UID is missing. Cannot fetch carbon footprint IDs.');
+          return [];
+        }
+    
+        try {
+          const carbonFootprintsRef = collection(db, 'users', uid, 'carbonFootprints');
+          const querySnapshot = await getDocs(carbonFootprintsRef);
+          const ids = querySnapshot.docs.map(doc => doc.id); // Get the document IDs
+          console.log("Fetched Carbon Footprint IDs:", ids); // Debugging line
+          return ids; // Return an array of IDs
+        } catch (error) {
+          console.error('Error fetching carbon footprint IDs:', error);
+          return []; // Return an empty array on error
+        }
+    };
+
+    useEffect(() => {
+        const fetchCarbonFootprintIds = async () => {
+            const uid = auth.currentUser?.uid;
+            if (uid) {
+                const ids = await fetchYourCarbonFootprintIds(uid);
+                setCarbonFootprintIds(ids);
+            }
+        };
+        fetchCarbonFootprintIds();
+    }, []);
+    
+    useEffect(() => {
+        if (carbonFootprintIds && carbonFootprintIds.length > 0) {
+            const fetchData = async () => {
+                try {
+                    const uid = auth.currentUser?.uid;
+                    const retrievedAnswers = await getAnswers(uid, carbonFootprintIds);
+                    setAnswers(retrievedAnswers || []); // Fallback to empty array if undefined
+                } catch (err) {
+                    setError("Error retrieving answers");
+                    console.error("Error retrieving answers:", err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+        } else {
+            setLoading(false); // If no IDs are available, stop loading
+        }
+    }, [carbonFootprintIds]);
+    
+    useEffect(() => {
+        answers.forEach((answer, index) => {
+            console.log(`Answer ${index + 1} totalEmission:`, answer.totalEmission);
+        });
+    }, [answers]);
+
+    // Calculate average emission whenever answers are updated
+    useEffect(() => {
+        if (answers.length > 0) {
+            const validEmissions = answers
+                .map(answer => parseFloat(answer.totalEmission)) // Ensure conversion to number
+                .filter(emission => !isNaN(emission) && emission > 0); // Filter valid numeric values
+    
+            if (validEmissions.length > 0) {
+                const totalEmission = validEmissions.reduce((sum, emission) => sum + emission, 0);
+                const avgEmission = totalEmission / validEmissions.length;
+                setAverageEmission(avgEmission);
+            } else {
+                console.warn("No valid emissions found in answers.");
+                setAverageEmission(0);
+            }
+        } else {
+            setAverageEmission(0);
+        }
+    }, [answers]);
+
+    
+
+    if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
+    if (error) return <Text>Error: {error}</Text>;
+
+    const chartConfig = {
+        type: 'bar',
+        data: {
+            labels: ['Your Average Emission', 'Global Average Emission'],
+            datasets: [{
+                label: 'Average Emission (tons CO₂)',
+                data: [averageEmission || 0, globalAverage],
+                backgroundColor: ['#438EF3', '#FF6384'],
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: 'white'
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontColor: 'white'
+                    }
+                }]
+            },
+            legend: {
+                labels: {
+                    fontColor: 'white'
+                }
+            }
+        }
+    };
+
+    const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
+
 
     return (
         <ScrollView style={styles.container}>
@@ -17,7 +142,7 @@ function  LandingScreen({ navigation }){
                     <Text style={styles.mainhead2}>impact</Text>
                 </View>
                 <View>
-                    <Text style={styles.graph}>Graph</Text>
+                    <Image style={styles.chartImage} source={{ uri: chartUrl }} resizeMode="contain" />
                 </View>
                 <View>
                     <Text style={styles.subhead}>Explore CarbonTrack</Text>
@@ -82,6 +207,11 @@ const styles = StyleSheet.create({
         fontSize: 60,
         fontWeight: '500',
         color: 'white'
+    },
+    chartImage: {
+        marginLeft: 8,
+        width: 340,
+        height: 220,
     },
     graph: {
         marginTop: 20,

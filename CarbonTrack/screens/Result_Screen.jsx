@@ -7,10 +7,11 @@ import { collection, getDocs } from 'firebase/firestore';
 function  ResultScreen({ navigation, route }){
 
     const { carbonFootprint } = route.params;
-    const [carbonFootprintIds, setCarbonFootprintIds] = useState([]);
+    const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
 
     const fetchYourCarbonFootprintIds = async (uid) => {
         if (!uid) {
@@ -32,59 +33,53 @@ function  ResultScreen({ navigation, route }){
 
     useEffect(() => {
         const fetchCarbonFootprintIds = async () => {
-          const uid = auth.currentUser?.uid; // Get the current user's UID
-          const ids = await fetchYourCarbonFootprintIds(uid);
-          setCarbonFootprintIds(ids);
+            const uid = auth.currentUser?.uid;
+            if (uid) {
+                const ids = await fetchYourCarbonFootprintIds(uid);
+                setCarbonFootprintIds(ids);
+            }
         };
-    
         fetchCarbonFootprintIds();
-      }, []);
+    }, []);
     
-      useEffect(() => {
-        const fetchData = async () => {
-          const uid = auth.currentUser?.uid; // Get the current user's UID
-          
-          if (!uid) {
-            console.error("UID is missing. User might not be logged in.");
-            setError("User not logged in");
-            setLoading(false);
-            return;
-          }
-    
-          try {
-            const retrievedAnswers = await getAnswers(uid, carbonFootprintIds);
-            setAnswers(retrievedAnswers);
-          } catch (err) {
-            console.error("Error retrieving answers:", err);
-            setError("Error retrieving answers");
-          } finally {
-            setLoading(false); // Set loading to false once data fetching is complete
-          }
-        };
-    
-        fetchData();
-      }, [carbonFootprintIds]); // Add carbonFootprintIds as a dependency to refetch answers when they change
+    useEffect(() => {
+        if (carbonFootprintIds && carbonFootprintIds.length > 0) {
+            const fetchData = async () => {
+                try {
+                    const uid = auth.currentUser?.uid;
+                    const retrievedAnswers = await getAnswers(uid, carbonFootprintIds);
+                    setAnswers(retrievedAnswers || []); // Fallback to empty array if undefined
+                } catch (err) {
+                    setError("Error retrieving answers");
+                    console.error("Error retrieving answers:", err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+        } else {
+            setLoading(false); // If no IDs are available, stop loading
+        }
+    }, [carbonFootprintIds]);
     
       useEffect(() => {
         console.log("Retrieved answers:", answers);
     }, [answers]);
 
-      if (loading) {
-        return <ActivityIndicator size="large" color="#0000ff" />;
-      }
-    
-      if (error) {
-        return <Text>Error: {error}</Text>;
-      }
+    if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
+    if (error) return <Text>Error: {error}</Text>;
 
-    const totalEmissions = answers
+    const totalEmissions = (answers || []) // Fallback to empty array if answers is undefined
         .map(answer => answer.result?.totalEmission)
         .filter(emission => emission !== undefined);
 
-    // Format dates and create labels array
-    const dateLabels = answers.map(answer => {
+    // Sort the answers based on timestamp in ascending order
+    const sortedAnswers = (answers || []).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    // Generate date labels from the sorted answers
+    const dateLabels = sortedAnswers.map(answer => {
         const date = new Date(answer.timestamp);
-        return date.toLocaleDateString(undefined, { month: '2-digit', year: '2-digit' }); // Formats to 'MM/DD/YYYY' or similar based on locale
+        return date.toLocaleDateString(undefined, { month: '2-digit', year: '2-digit' });
     });
 
     //Quickchart url for chart one
@@ -135,11 +130,11 @@ function  ResultScreen({ navigation, route }){
             }
         }
     };
-    
+
     const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(barChartConfig))}`;
 
     // Extract emissions data
-    const { householdEmission, transportEmission, energyEmission, dietEmission } = carbonFootprint;
+    const { householdEmission = 0, transportEmission = 0, energyEmission = 0, dietEmission = 0} = carbonFootprint;
 
     // Extract emissions data and default to zero if undefined
     const emissionsData = [
@@ -156,7 +151,7 @@ function  ResultScreen({ navigation, route }){
         data: {
             labels: ['Home', 'Transportation', 'Energy', 'Diet'],
             datasets: [{
-                data: emissionsData.map(value => value > 0 ? value : 0.1),
+                data: emissionsData.map(value => value || 0),
                 backgroundColor: ['#f5c542', '#f54291', '#42f5a1', '#f54242'],
                 borderWidth: 0
             }],
@@ -198,7 +193,6 @@ function  ResultScreen({ navigation, route }){
             }
         }
     };
-    
     const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
 
     return (

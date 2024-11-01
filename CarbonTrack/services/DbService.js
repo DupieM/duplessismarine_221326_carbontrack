@@ -77,21 +77,20 @@ export const getAnswers = async (uid, carbonFootprintIds) => {
   try {
     const allAnswers = [];
 
-    // Loop through each carbon footprint ID and fetch the answers
     for (const carbonFootprintId of carbonFootprintIds) {
       const answersRef = collection(db, 'users', uid, 'carbonFootprints', carbonFootprintId, 'answers');
       const querySnapshot = await getDocs(answersRef);
 
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        // Check if totalEmission exists; if not, set it to null or a default value
-        const totalEmission = data.totalEmission !== undefined ? data.totalEmission : null;
+        // Access totalEmission only from result, if it exists
+        const totalEmission = data.result?.totalEmission ?? null;
 
         allAnswers.push({ ...data, id: doc.id, carbonFootprintId, totalEmission });
       });
     }
 
-    return allAnswers; // Return the array of answers
+    return allAnswers;
   } catch (error) {
     console.error('Error retrieving answers:', error);
   }
