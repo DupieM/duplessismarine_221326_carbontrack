@@ -308,7 +308,7 @@ const SwipeableCard = ({ label }) => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Total Emissions</Text>
-            <Text style={styles.modalText}>{totalEmissions} ton CO2</Text>
+            <Text style={styles.modalText}>{totalEmissions} ton CO₂</Text>
             <Button title="Close" onPress={handleCloseModal} />
           </View>
         </View>

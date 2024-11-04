@@ -96,6 +96,31 @@ export const getAnswers = async (uid, carbonFootprintIds) => {
   }
 };
 
+// Get the OpenAI API_Key
+
+export const getOpenAI_Key = async () => {
+
+  try {
+    let apiKey = [];
+
+    const querySnapshot = await getDocs(collection(db, "OpenAi_API_Key"));
+    querySnapshot.forEach((doc) => {
+        apiKey.push({ ...doc.data(), id: doc.id }); // Push each doc's data to the array
+    });
+
+    // Check if the array is populated
+    if (apiKey.length === 0) {
+        console.warn("No API keys found in Firestore.");
+    }
+
+    return apiKey;
+  } catch (error) {
+      console.error("Error retrieving API key:", error);
+      throw error; // Re-throw the error to be handled by the caller
+  }
+
+}
+
 
 // export const getAnswers = async (uid, carbonFootprintIds) => {
 //   try {

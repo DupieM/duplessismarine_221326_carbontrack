@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native'
-import { getAnswers } from '../services/DbService';
+import { getAnswers, getOpenAI_Key } from '../services/DbService';
 import { auth, db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { getEmissionInsights } from '../OpenAIService';
+import axios from 'axios';
+import { OPENAI_API_KEY } from '@env';
+
+const API_URL = "https://api.openai.com/v1/chat/completions";
 
 function  ResultScreen({ navigation, route, emissionData }){
 
@@ -12,25 +15,68 @@ function  ResultScreen({ navigation, route, emissionData }){
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [insights, setInsights] = useState("");
     const [emissionInsights, setEmissionInsights] = useState('');
 
-    console.log("Emission Data:", emissionData);
+    const [loadingtwo, setLoadingTwo] = useState(true);
+    const [errortwo, setErrortwo] = useState(null);
+    const [insights, setInsights] = useState(null);
+    const [opeAi, setOpenAi] = useState([]);
+
+    // To call the API key from Firestore
+
     useEffect(() => {
-        const fetchInsights = async () => {
+        hadlegettingAPI
+    }, [])
+
+    const hadlegettingAPI = async () => {
+        var allData = await getOpenAI_Key()
+        setOpenAi(allData)
+    };
+
+    // The api call for openAi
+    useEffect(() => {
+        const callAPIKey = async () => {
+            console.log("callAPIKey function is running");
+
             try {
-                const fetchedInsights = await getEmissionInsights(emissionData);
-                setInsights(fetchedInsights);
-            } catch (err) {
-                setError(err.message);
-                console.error(err);
+                // Retrieve API key from Firestore
+                console.log("Fetching API key...");
+
+                const apiKey = OPENAI_API_KEY;
+
+                const prompt = `Give me short insights on these data: dietEmission 1.3 tons CO₂, energyEmission 0.4 tons CO₂, householdEmission 2.7 tons CO₂, totalEmission 4.75 tons CO₂ and transportEmission 0.4 tons CO₂`;
+
+                const response = await axios.post(API_URL, {
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'system', content: 'You are an assistant.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.3, // Controls creativity/randomness
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                    }
+                });
+
+                console.log(response.data.choices[0].message.content); // Log the response's text
+                setInsights(response.data.choices[0].message.content); // Store insights in state
+            } catch (error) {
+                if (error.response && error.response.status === 429) {
+                    console.error('Rate limit exceeded. Please wait and try again.');
+                    setErrortwo('Rate limit exceeded. Please wait and try again.');
+                } else {
+                    console.error('Error calling OpenAI API:', error);
+                    setErrortwo('Error calling OpenAI API.');
+                }
             } finally {
-                setLoading(false);
+                setLoadingTwo(false);
             }
         };
 
-        fetchInsights();
-    }, [emissionData]);
+        callAPIKey();
+    }, []);
 
 
     const fetchYourCarbonFootprintIds = async (uid) => {
@@ -82,9 +128,9 @@ function  ResultScreen({ navigation, route, emissionData }){
         }
     }, [carbonFootprintIds]);
     
-    useEffect(() => {
-        console.log("Retrieved answers:", answers);
-    }, [answers]);
+    // useEffect(() => {
+    //     console.log("Retrieved answers:", answers);
+    // }, [answers]);
 
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
     if (error) return <Text>Error: {error}</Text>;
@@ -108,7 +154,7 @@ function  ResultScreen({ navigation, route, emissionData }){
         data: {
             labels: dateLabels,
             datasets: [{
-                label: 'Total CO2',
+                label: 'Total CO₂',
                 data: totalEmissions,
                 backgroundColor: 'rgba(75, 192, 192, 0.9)', // Bar color
                 borderColor: 'rgba(75, 192, 192, 1)',
@@ -220,6 +266,7 @@ function  ResultScreen({ navigation, route, emissionData }){
             <View style={styles.head}>
                 <Text style={styles.mainhead}>Your Carbon</Text>
                 <Text style={styles.mainhead2}>Footprint</Text>
+                <Text style={styles.subhead}>(Insights are generated below the two diagrams)</Text>
             </View>
             <View>
                 <View>
@@ -239,7 +286,9 @@ function  ResultScreen({ navigation, route, emissionData }){
             </View>
             <View>
                 <Text>Emission Insights:</Text>
-                <Text>{insights}</Text>
+                <View>
+                    <Text>{insights}</Text>
+                </View>
             </View>
             <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce')}>
                 <Text style={styles.cardparagrap2}>
@@ -272,7 +321,12 @@ const styles = StyleSheet.create({
         marginTop: -20,
         fontSize: 58,
         fontWeight: '500',
-        color: 'white'
+        color: 'white',
+        marginBottom: 15
+    },
+    subhead: {
+        fontSize: 15,
+        color: '#C1FF1C'
     },
     graph: {
         marginTop: 20,
@@ -302,7 +356,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: 27,
         height: 94,
-        marginBottom: 20
+        marginBottom: 20,
+        marginTop: 30
     },
     cardparagrap2: {
         fontSize: 30,
