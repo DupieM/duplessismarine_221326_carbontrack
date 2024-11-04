@@ -8,7 +8,7 @@ import { OPENAI_API_KEY } from '@env';
 
 const API_URL = "https://api.openai.com/v1/chat/completions";
 
-function  ResultScreen({ navigation, route, emissionData }){
+function  ResultScreen({ navigation, route }){
 
     const { carbonFootprint } = route.params;
     const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
@@ -22,17 +22,6 @@ function  ResultScreen({ navigation, route, emissionData }){
     const [insights, setInsights] = useState(null);
     const [opeAi, setOpenAi] = useState([]);
 
-    // To call the API key from Firestore
-
-    useEffect(() => {
-        hadlegettingAPI
-    }, [])
-
-    const hadlegettingAPI = async () => {
-        var allData = await getOpenAI_Key()
-        setOpenAi(allData)
-    };
-
     // The api call for openAi
     useEffect(() => {
         const callAPIKey = async () => {
@@ -44,7 +33,14 @@ function  ResultScreen({ navigation, route, emissionData }){
 
                 const apiKey = OPENAI_API_KEY;
 
-                const prompt = `Give me short insights on these data: dietEmission 1.3 tons CO₂, energyEmission 0.4 tons CO₂, householdEmission 2.7 tons CO₂, totalEmission 4.75 tons CO₂ and transportEmission 0.4 tons CO₂`;
+                // const prompt = `Give me short insights on these data: dietEmission 1.3 tons CO₂, energyEmission 0.4 tons CO₂, householdEmission 2.7 tons CO₂, totalEmission 4.75 tons CO₂ and transportEmission 0.4 tons CO₂`;
+
+                const prompt = `Provide short insights on these emissions: 
+                - Diet Emission: ${carbonFootprint.dietEmission || 0} tons CO₂,
+                - Energy Emission: ${carbonFootprint.energyEmission || 0} tons CO₂,
+                - Household Emission: ${carbonFootprint.householdEmission || 0} tons CO₂,
+                - Transport Emission: ${carbonFootprint.transportEmission || 0} tons CO₂,
+                - Total Emission: ${carbonFootprint.totalEmission || 0} tons CO₂.`;
 
                 const response = await axios.post(API_URL, {
                     model: 'gpt-4o-mini',
@@ -60,7 +56,7 @@ function  ResultScreen({ navigation, route, emissionData }){
                     }
                 });
 
-                console.log(response.data.choices[0].message.content); // Log the response's text
+                // console.log(response.data.choices[0].message.content); // Log the response's text
                 setInsights(response.data.choices[0].message.content); // Store insights in state
             } catch (error) {
                 if (error.response && error.response.status === 429) {
