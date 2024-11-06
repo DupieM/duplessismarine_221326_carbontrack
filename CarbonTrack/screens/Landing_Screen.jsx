@@ -12,6 +12,7 @@ function  LandingScreen({ navigation }){
         handleSignOut()
     }
 
+    // All the useStates to set answers 
     const [averageEmission, setAverageEmission] = useState(null);
     const globalAverage = 4.7;
     const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
@@ -19,6 +20,7 @@ function  LandingScreen({ navigation }){
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Fetch the Carbofootprint ID's to be able to get the average and then plot it on a graph
     const fetchYourCarbonFootprintIds = async (uid) => {
         if (!uid) {
           console.error('UID is missing. Cannot fetch carbon footprint IDs.');
@@ -37,6 +39,7 @@ function  LandingScreen({ navigation }){
         }
     };
 
+    // UseEffect to load the carbonfootprints id's to be used to calculate average
     useEffect(() => {
         const fetchCarbonFootprintIds = async () => {
             const uid = auth.currentUser?.uid;
@@ -48,6 +51,7 @@ function  LandingScreen({ navigation }){
         fetchCarbonFootprintIds();
     }, []);
     
+    // Function to get the specific answers from the users carbonfootprints
     useEffect(() => {
         if (carbonFootprintIds && carbonFootprintIds.length > 0) {
             const fetchData = async () => {
@@ -84,7 +88,7 @@ function  LandingScreen({ navigation }){
             if (validEmissions.length > 0) {
                 const totalEmission = validEmissions.reduce((sum, emission) => sum + emission, 0);
                 const avgEmission = totalEmission / validEmissions.length;
-                setAverageEmission(avgEmission);
+                setAverageEmission(parseFloat(avgEmission.toFixed(1)));;
             } else {
                 console.warn("No valid emissions found in answers.");
                 setAverageEmission(0);
@@ -95,42 +99,41 @@ function  LandingScreen({ navigation }){
     }, [answers]);
 
     
-
+    // To show if theri is an error when loading the page
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
     if (error) return <Text>Error: {error}</Text>;
 
+    // Function to display the Doughnut chart
     const chartConfig = {
-        type: 'bar',
+        type: 'doughnut',
         data: {
-            labels: ['Your Average Emission', 'Global Average Emission'],
+            labels: ['Your AVG Footprint', 'Global AVG Footprint'],
             datasets: [{
-                label: 'Average Emission (tons CO₂)',
                 data: [averageEmission || 0, globalAverage],
-                backgroundColor: ['#438EF3', '#FF6384'],
+                backgroundColor: ['#60B6FF', '#96D629']
             }]
         },
         options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        fontColor: 'white'
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        fontColor: 'white'
-                    }
-                }]
+            plugins: {
+                datalabels: {
+                    color: 'black',
+                    font: {
+                        weight: 'bold',
+                        size: 20,
+                    },
+                    formatter: (value) => `${value} tons CO₂`
+                }
             },
             legend: {
+                position: 'bottom',
                 labels: {
-                    fontColor: 'white'
+                    fontColor: 'white',
+                    fontSize: 20,
                 }
-            }
+            },
         }
     };
-
+    
     const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
 
 
@@ -198,20 +201,26 @@ const styles = StyleSheet.create({
         marginTop: 25
     },
     mainhead: {
-        fontSize: 60,
-        fontWeight: '500',
-        color: 'white'
+        fontSize: 66,
+        fontWeight: '200',
+        color: 'white',
+        fontFamily: 'PatrickHand',
+        letterSpacing: 2
     },
     mainhead2: {
         marginTop: -20,
-        fontSize: 60,
-        fontWeight: '500',
-        color: 'white'
+        fontSize: 66,
+        fontWeight: '200',
+        color: 'white',
+        fontFamily: 'PatrickHand',
+        letterSpacing: 2,
+        marginBottom: 15
     },
     chartImage: {
-        marginLeft: 8,
-        width: 340,
-        height: 220,
+        marginLeft: 40,
+        width: 280,
+        height: 160,
+        marginBottom: 10
     },
     graph: {
         marginTop: 20,
@@ -221,14 +230,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     subhead: {
-        fontSize: 36,
+        fontSize: 43,
         color: 'white',
         textAlign: 'center',
-        fontWeight: '500'
+        fontWeight: '500',
+        fontFamily: 'PatrickHand',
     },
     box: {
         flexDirection: 'row',
-        marginTop: 30,
+        marginTop: 20,
     },
     cardone: {
         backgroundColor: '#3AA345',
@@ -245,7 +255,8 @@ const styles = StyleSheet.create({
     cardparagrap: {
         marginLeft: 15,
         fontSize: 30,
-        color: '#C1FF1C'
+        color: '#C1FF1C',
+        fontFamily: 'NunitoMedium'
     },
     image: {
         height: 97,
@@ -260,21 +271,24 @@ const styles = StyleSheet.create({
     cardparagrap2: {
         fontSize: 30,
         color: '#C1FF1C',
-        marginRight: 20
+        marginRight: 20,
+        fontFamily: 'NunitoMedium'
     },
     tips: {
         marginTop: 4
     },
     signout: {
         flexDirection: 'row',
-        marginTop: 30
+        marginTop: 30,
+        marginBottom: 20
     },
     signouttext: {
         color: 'white',
         marginLeft: 10,
         fontSize: 19,
         marginRight: 10,
-        marginTop: 6
+        marginTop: 6,
+        fontFamily: 'NunitoMedium'
     },
     button: {
         backgroundColor: '#C1FF1C',
@@ -287,6 +301,7 @@ const styles = StyleSheet.create({
         fontSize: 19,
         fontWeight: '600',
         marginTop: 6,
-        color: '#343436'
+        color: '#343436',
+        fontFamily: 'NunitoBold'
     }
 });

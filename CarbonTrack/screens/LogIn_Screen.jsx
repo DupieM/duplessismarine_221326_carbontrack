@@ -24,13 +24,15 @@ function  LogInScreen({ navigation }){
           Alert.alert("Validation Error", "Please fill all the required fields.");
           return;
         }
-    
+        
+        // Authenticate the user credentials with those in the firebase database
         var success = await handleLogin(email, password);
           
-          if (success) {
-            Alert.alert("Log In", "You have successfully logged into FunRun.");
-            return;
-          }
+        if (success) {
+          Alert.alert("Log In", "You have successfully logged into FunRun.");
+          return;
+        }
+        
       }
 
     return (
@@ -84,11 +86,12 @@ const styles = StyleSheet.create({
         height: 420
     },
     mainhead: {
-        marginTop: 120,
-        fontSize: 65,
+        marginTop: 100,
+        fontSize: 75,
         textAlign: 'center',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: '300',
+        fontFamily: 'PatrickHand'
     },
     input: {
         backgroundColor: '#B1E7A7',
@@ -100,14 +103,17 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         width: '80%',
         color: '#00272E',
-        marginTop: 23
+        marginTop: 23,
+        fontFamily: 'NunitoMedium',
+        fontWeight: '200'
     },
     password: {
         marginLeft: 50,
         marginTop: 5,
         marginBottom: 27,
-        fontSize: 17,
-        color: '#9BE931'
+        fontSize: 18,
+        color: '#9BE931',
+        fontFamily: 'NunitoItalic'
     },
     Btn: {
         backgroundColor: '#58BB44',
@@ -118,10 +124,11 @@ const styles = StyleSheet.create({
         marginBottom: 25
     },
     Btntext: {
-        fontSize: 35,
-        fontWeight: '700',
+        fontSize: 33,
+        fontWeight: '200',
         textAlign: 'center',
-        color: '#303031'
+        color: '#303031',
+        fontFamily: 'NunitoBlack'
     },
     signupcontainer: {
         flexDirection: 'row',

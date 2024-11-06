@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, Button, Modal } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TextInput, ScrollView, Button, Modal, Alert, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { createNewEntry, saveCalculationAnswer } from '../services/DbService';
@@ -34,7 +34,9 @@ function TrackerScreen({ navigation }) {
   );
 }
 
+// Fuction to activate swipeable card to see the other half of the form
 const SwipeableCard = ({ label }) => {
+  // Code to get the model to work
   const translateX = useSharedValue(0);
   const [showForm, setShowForm] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,7 +44,7 @@ const SwipeableCard = ({ label }) => {
   const [carbonFootprintData, setCarbonFootprintData] = useState(null);
   const navigation = useNavigation();
 
-  //data for form
+  //data for form 
   const [householdOccupants, setHouseholdOccupants] = useState('');
   const [transportUsed, setTransportUsed] = useState('');
   const [kilometersTraveled, setKilometersTraveled] = useState('');
@@ -51,6 +53,7 @@ const SwipeableCard = ({ label }) => {
   const [dietPreferences, setDietPreferences] = useState('');
   const [recycle, setRecycle] = useState('');
 
+  // Gesture to hadle swipe of card
   const handleGesture = (event) => {
     if (event.nativeEvent.translationX < -50) {
       // Swipe left action
@@ -63,6 +66,7 @@ const SwipeableCard = ({ label }) => {
     }
   };
 
+  // Code to activate the animated card style
   const animatedCardStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: translateX.value }],
@@ -77,6 +81,8 @@ const SwipeableCard = ({ label }) => {
 
   //to create enrty in database
   const handleSubmit = async () => {
+
+    // Proceed with form submission and navigation to ResultScreen
     const formData = {
       householdOccupants: parseInt(householdOccupants), 
       transportUsed: parseFloat(transportUsed),
@@ -122,6 +128,7 @@ const SwipeableCard = ({ label }) => {
 
   };
 
+  // function to close model and navigate to the reslut screen
   const handleCloseModal = () => {
     setModalVisible(false);
     navigation.navigate('Result', { carbonFootprint: carbonFootprintData }); // Navigate to Result screen after closing modal
@@ -293,8 +300,10 @@ const SwipeableCard = ({ label }) => {
               }}
             />
           </View>
-          <Button title="Calculate"
-              onPress={handleSubmit}  />
+          <TouchableOpacity  style={styles.Btn} onPress={handleSubmit}>
+            <Text style={styles.Btntext}>Calculate</Text>
+          </TouchableOpacity>
+
         </Animated.View>
       )}
 
@@ -309,7 +318,9 @@ const SwipeableCard = ({ label }) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Total Emissions</Text>
             <Text style={styles.modalText}>{totalEmissions} ton CO₂</Text>
-            <Button title="Close" onPress={handleCloseModal} />
+            <TouchableOpacity style={styles.Btn_two} onPress={handleCloseModal} >
+              <Text style={styles.Btn_two_text}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -321,106 +332,162 @@ const SwipeableCard = ({ label }) => {
 export default TrackerScreen;
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#007541',
-      alignItems: 'center',
-    },
-    head: {
-      alignItems: 'center',
-      marginTop: 30,
-    },
-    mainhead: {
-      fontSize: 50,
-      fontWeight: '700',
-      color: 'white',
-    },
-    mainhead2: {
-      marginTop: -10,
-      fontSize: 50,
-      fontWeight: '700',
-      color: 'white',
-    },
-    subhead: {
-      alignItems: 'center',
-      marginTop: 10,
-    },
-    subText: {
-      fontSize: 25,
-      color: 'white',
-    },
-    swipeableContainer: {
-      marginBottom: 40
-    },
-    card: {
-      backgroundColor: '#55A545',
-      padding: 13,
-      borderRadius: 10,
-      marginTop: 20,
-      marginRight: 10,
-      width: 300,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.8,
-      shadowRadius: 2,
-      elevation: 5,
-    },
-    label: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginTop: 10,
-      textAlign: "center",
-      color: '#C1FF1C'
-    },
-    cardText: {
-      fontSize: 20,
-      color: '#343436',
-      fontWeight: '500',
-      marginBottom: 4
-    },
-    formContainer: {
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      bottom: 0,
-      left: 310,
-      width: 300,
-      backgroundColor: '#55A545',
-      padding: 20,
-      borderRadius: 10,
-      marginTop: 10,
-    },
-    formCard: {
-      backgroundColor: '#55A545',
-      padding: 20,
-      borderRadius: 10,
-      marginTop: 10, // Change marginTop to 10 for closer placement
-      width: 300,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.8,
-      shadowRadius: 2,
-      elevation: 5,
-    },
-    formLabel: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
-    input: {
-      height: 40,
-      border: 'none',
-      borderRadius: 8,
-      paddingHorizontal: 10,
-      marginBottom: 10,
-      backgroundColor: '#007541',
-      color: 'white'
-    },
-    placeholderStyle: {
-      color: 'white'
-    },
-    modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
-  modalContent: { width: '80%', padding: 20, backgroundColor: 'white', borderRadius: 10, alignItems: 'center' },
-  modalTitle: { fontSize: 24, fontWeight: 'bold' },
-  modalText: { fontSize: 20, marginVertical: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: '#007541',
+    alignItems: 'center',
+  },
+  head: {
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  mainhead: {
+    fontSize: 64,
+    fontWeight: '200',
+    color: 'white',
+    fontFamily: 'PatrickHand',
+  },
+  mainhead2: {
+    marginTop: -16,
+    fontSize: 64,
+    fontWeight: '200',
+    color: 'white',
+    fontFamily: 'PatrickHand',
+  },
+  subhead: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10
+  },
+  subText: {
+    fontSize: 25,
+    color: '#C1FF1C',
+    fontFamily: 'NunitoMedium',
+  },
+  swipeableContainer: {
+    marginBottom: 40
+  },
+  card: {
+    backgroundColor: '#55A545',
+    padding: 13,
+    borderRadius: 10,
+    marginTop: 20,
+    marginRight: 10,
+    width: 300,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  label: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 10,
+    textAlign: "center",
+    color: '#C1FF1C'
+  },
+  cardText: {
+    fontSize: 20,
+    color: '#343436',
+    fontWeight: '200',
+    marginBottom: 4,
+    fontFamily: 'NunitoBold'
+  },
+  formContainer: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    left: 310,
+    width: 300,
+    backgroundColor: '#55A545',
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  formCard: {
+    backgroundColor: '#55A545',
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 10, // Change marginTop to 10 for closer placement
+    width: 300,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  formLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  input: {
+    height: 40,
+    border: 'none',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    backgroundColor: '#007541',
+    color: 'white',
+    fontFamily: 'NunitoMedium',
+    fontSize: 16
+  },
+  placeholderStyle: {
+    color: 'white'
+  },
+  modalContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'rgba(0,0,0,0.6)' 
+  },
+  modalContent: { 
+    width: '80%', 
+    padding: 20, 
+    backgroundColor: '#303031', 
+    borderRadius: 10, 
+    alignItems: 'center' 
+  },
+  modalTitle: { 
+    fontSize: 35, 
+    fontWeight: '400',
+    color: '#C1FF1C',
+    fontFamily: 'NunitoMedium',
+  },
+  modalText: { 
+    fontSize: 30, 
+    marginVertical: 10,
+    color: '#C1FF1C',
+    fontFamily: 'NunitoMedium',
+  },
+  Btn_two: {
+    backgroundColor: '#58BB44',
+    width: 120,
+    padding: 6,
+    marginTop: 20,
+    borderRadius: 20
+  },
+  Btn_two_text: {
+    color: '#303031',
+    fontFamily: 'NunitoBold',
+    fontSize: 25,
+    textAlign: 'center',
+  },
+  Btn: {
+    backgroundColor: '#303031',
+    width: 200,
+    marginLeft: 31,
+    padding: 6,
+    borderRadius: 50,
+    marginTop: 25
+  },
+  Btntext: {
+      fontSize: 33,
+      fontWeight: '200',
+      textAlign: 'center',
+      color: '#C1FF1C',
+      fontFamily: 'NunitoBold'
+  },
   });

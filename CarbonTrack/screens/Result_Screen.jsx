@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert } from 'react-native'
 import { getAnswers, getOpenAI_Key } from '../services/DbService';
 import { auth, db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
@@ -10,7 +10,8 @@ const API_URL = "https://api.openai.com/v1/chat/completions";
 
 function  ResultScreen({ navigation, route }){
 
-    const { carbonFootprint } = route.params;
+    // creating const varibles to call functions and data
+    const { carbonFootprint } = route.params; // retrieve form data from tracker screen
     const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -74,7 +75,7 @@ function  ResultScreen({ navigation, route }){
         callAPIKey();
     }, []);
 
-
+    // Function to retrieve the carbonfootrpisnt from the user that is logged in currently
     const fetchYourCarbonFootprintIds = async (uid) => {
         if (!uid) {
           console.error('UID is missing. Cannot fetch carbon footprint IDs.');
@@ -93,6 +94,7 @@ function  ResultScreen({ navigation, route }){
         }
     };
 
+    // function to fetch uid of user that is logged in
     useEffect(() => {
         const fetchCarbonFootprintIds = async () => {
             const uid = auth.currentUser?.uid;
@@ -104,6 +106,7 @@ function  ResultScreen({ navigation, route }){
         fetchCarbonFootprintIds();
     }, []);
     
+    // function to call the ansers that is retrieved from firestore to plot on charts
     useEffect(() => {
         if (carbonFootprintIds && carbonFootprintIds.length > 0) {
             const fetchData = async () => {
@@ -123,10 +126,6 @@ function  ResultScreen({ navigation, route }){
             setLoading(false); // If no IDs are available, stop loading
         }
     }, [carbonFootprintIds]);
-    
-    // useEffect(() => {
-    //     console.log("Retrieved answers:", answers);
-    // }, [answers]);
 
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
     if (error) return <Text>Error: {error}</Text>;
@@ -144,7 +143,7 @@ function  ResultScreen({ navigation, route }){
         return date.toLocaleDateString(undefined, { month: '2-digit', year: '2-digit' });
     });
 
-    //Quickchart url for chart one
+    //Quickchart url for bar chart of total emission
     const barChartConfig = {
         type: 'bar', 
         data: {
@@ -152,12 +151,24 @@ function  ResultScreen({ navigation, route }){
             datasets: [{
                 label: 'Total CO₂',
                 data: totalEmissions,
-                backgroundColor: 'rgba(75, 192, 192, 0.9)', // Bar color
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: '#96D629', // Bar color
+                borderColor: '#96D629',
                 borderWidth: 1,
             }]
         },
         options: {
+            plugins: {
+                datalabels: {
+                    color: 'white',  // Text color for the data labels
+                    anchor: 'end',  // Positions the labels at the end of each bar
+                    align: 'top',   // Aligns labels at the top of the bars
+                    font: {
+                        size: 12,
+                        weight: 'bold'
+                    },
+                    formatter: (value) => `${value} CO₂`  // Display value with CO₂ unit
+                }
+            },
             scales: {
                 yAxes: [{
                     ticks: {
@@ -180,7 +191,8 @@ function  ResultScreen({ navigation, route }){
             },
             legend: {
                 labels: {
-                    fontColor: 'white' // Legend text color
+                    fontColor: 'white', // Legend text color
+                    fontFamily: 'NunitoMedium'
                 }
             },
             tooltips: {
@@ -196,26 +208,17 @@ function  ResultScreen({ navigation, route }){
     const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(barChartConfig))}`;
 
     // Extract emissions data
-    const { householdEmission = 0, transportEmission = 0, energyEmission = 0, dietEmission = 0} = carbonFootprint;
+    const emissionsData = [carbonFootprint.householdEmission || 0, carbonFootprint.transportEmission || 0, carbonFootprint.energyEmission || 0, carbonFootprint.dietEmission || 0];
 
-    // Extract emissions data and default to zero if undefined
-    const emissionsData = [
-        householdEmission || 0,
-        transportEmission || 0,
-        energyEmission || 0,
-        dietEmission || 0,
-    ];
-    // console.log("Emissions Data:", emissionsData);
-
-    //Quickchart url for chart two
+    //Quickchart url for polar area chart for breakdown of emission data
     const chartConfig = {
         type: 'polarArea',
         data: {
             labels: ['Home', 'Transportation', 'Energy', 'Diet'],
             datasets: [{
                 data: emissionsData.map(value => value || 0),
-                backgroundColor: ['#f5c542', '#f54291', '#42f5a1', '#f54242'],
-                borderWidth: 0
+                backgroundColor: ['#f5c542', '#60B6FF', '#42f5a1', '#f54242'],
+                borderWidth: 0   // home - transport - energy - diet
             }],
         },
         options: {
@@ -236,7 +239,7 @@ function  ResultScreen({ navigation, route }){
             },
             title: {
                 display: true,
-                text: 'Your emission data per category',
+                text: 'Your current emissions per category',
                 fontColor: '#FFFFFF',
                 fontSize: 20
             },
@@ -255,6 +258,7 @@ function  ResultScreen({ navigation, route }){
             }
         }
     };
+
     const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
 
     return (
@@ -262,7 +266,7 @@ function  ResultScreen({ navigation, route }){
             <View style={styles.head}>
                 <Text style={styles.mainhead}>Your Carbon</Text>
                 <Text style={styles.mainhead2}>Footprint</Text>
-                <Text style={styles.subhead}>(Insights are generated below the two diagrams)</Text>
+                <Text style={styles.subhead}>Insights based on your carbon footprint data below</Text>
             </View>
             <View>
                 <View>
@@ -281,9 +285,9 @@ function  ResultScreen({ navigation, route }){
                 />
             </View>
             <View>
-                <Text>Emission Insights:</Text>
+                <Text style={styles.Insights_head}>Emission Insights</Text>
                 <View>
-                    <Text>{insights}</Text>
+                    <Text style={styles.Insights_body}>{insights}</Text>
                 </View>
             </View>
             <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce')}>
@@ -309,20 +313,23 @@ const styles = StyleSheet.create({
         marginTop: 30
     },
     mainhead: {
-        fontSize: 58,
-        fontWeight: '500',
-        color: 'white'
+        fontSize: 66,
+        fontWeight: '200',
+        color: 'white',
+        fontFamily: 'PatrickHand',
     },
     mainhead2: {
         marginTop: -20,
-        fontSize: 58,
+        fontSize: 66,
         fontWeight: '500',
         color: 'white',
-        marginBottom: 15
+        marginBottom: 15,
+        fontFamily: 'PatrickHand',
     },
     subhead: {
-        fontSize: 15,
-        color: '#C1FF1C'
+        fontSize: 14,
+        color: '#C1FF1C',
+        fontFamily: 'NunitoItalic'
     },
     graph: {
         marginTop: 20,
@@ -358,9 +365,27 @@ const styles = StyleSheet.create({
     cardparagrap2: {
         fontSize: 30,
         color: '#C1FF1C',
-        marginRight: 20
+        marginRight: 20,
+        fontFamily: 'NunitoMedium',
     },
     tips: {
         marginTop: 4
+    },
+    Insights_head: {
+        color: 'white',
+        fontSize: 30,
+        textAlign: 'center',
+        marginBottom:   10,
+        marginTop: -15,
+        fontFamily: 'NunitoMedium',
+    },
+    Insights_body: {
+        color: '#C1FF1C',
+        fontSize: 20,
+        letterSpacing: 2,
+        marginLeft: 30,
+        marginRight: 30,
+        textAlign: 'center',
+        fontFamily: 'NunitoMedium',
     }
 });

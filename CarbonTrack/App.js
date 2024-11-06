@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, Image, View } from 'react-native';
+import { StyleSheet, Text, Image, View, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,14 +16,28 @@ import { doc, getDoc } from 'firebase/firestore';
 import ResultScreen from './screens/Result_Screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ChoosingScreen from './screens/Choosing_Screen';
+import { useFonts } from 'expo-font';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
 
-  const [loggedIn, setLoggedIn] = useState(false)
+  // Adding my chosen fonts
+  const [fontsLoaded] = useFonts({
+    'PatrickHand':require('./assets/fonts/PatrickHand-Regular.ttf'),
+    'Nunito':require('./assets/fonts/Nunito-VariableFont_wght.ttf'),
+    'NunitoBold':require('./assets/fonts/static/Nunito-Bold.ttf'),
+    'NunitoBlack':require('./assets/fonts/static/Nunito-Black.ttf'),
+    'NunitoMedium':require('./assets/fonts/static/Nunito-Medium.ttf'),
+    'NunitoItalic':require('./assets/fonts/static/Nunito-SemiBoldItalic.ttf'),
+  })
 
+
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [isFormComplete, setIsFormComplete] = useState(false);
+
+  // Helps to she when user is looged in to switch to landing page
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -43,6 +57,20 @@ export default function App() {
 
     return unsubscribe
   }, [])
+
+  // Makes sure fonts are first loaded then display the first screen
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#58BB44" />
+      </View>
+    );
+  }
+
+  // Callback to set form completion status from TrackerScreen
+  const handleFormCompletion = (status) => {
+    setIsFormComplete(status);
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -175,5 +203,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#007541',
   },
 });

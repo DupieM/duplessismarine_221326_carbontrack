@@ -15,7 +15,7 @@ function  ReduceScreen({}){
     // Function to fetch tips/articles from Google Custom Search API
     const fetchArticles = async () => {
         try {
-            const query = 'The best ways to reduce your carbon footprint'; // Your search query
+            const query = 'The best ways to reduce your carbon footprint that was recently published'; // Your search query
             const response = await axios.get(
                 `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${query}`
             );
@@ -28,15 +28,18 @@ function  ReduceScreen({}){
         }
     };
 
+    // call the fetch articles function
     useEffect(() => {
         fetchArticles();
     }, []);
 
+    // open the model to view the articles
     const openModal = (url) => {
         setSelectedArticleUrl(url);
         setModalVisible(true); // Show the modal
     };
 
+    // closes the model when clicking on the close button
     const closeModal = () => {
         setModalVisible(false); // Hide the modal
         setSelectedArticleUrl(null); // Reset the selected URL
@@ -99,15 +102,17 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     mainhead: {
-        fontSize: 43,
-        fontWeight: '500',
-        color: 'white'
+        fontSize: 50,
+        fontWeight: '200',
+        color: 'white',
+        fontFamily: 'PatrickHand',
     },
     mainhead2: {
         marginTop: -10,
-        fontSize: 43,
-        fontWeight: '500',
-        color: 'white'
+        fontSize: 50,
+        fontWeight: '200',
+        color: 'white',
+        fontFamily: 'PatrickHand',
     },
     cardone: {
         backgroundColor: '#3AA345',
@@ -119,12 +124,15 @@ const styles = StyleSheet.create({
         paddingRight: 15,
         flexDirection: 'row',
         marginLeft: 27,
-        height: 94,
-        marginBottom: 20
+        height: 96,
+        marginBottom: 20,
     },
     cardparagrap: {
-        fontSize: 30,
-        color: '#C1FF1C'
+        fontSize: 22,
+        color: '#C1FF1C',
+        alignItems: 'center',
+        fontFamily: 'NunitoMedium', 
+        lineHeight: 27
     },
     modalContainer: {
         flex: 1,

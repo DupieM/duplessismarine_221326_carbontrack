@@ -1,5 +1,5 @@
 import React from 'react'
-import { ImageBackground, Text, View, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { ImageBackground, Text, View, StyleSheet, ScrollView, TouchableOpacity, Image,  } from 'react-native'
 
 function ChoosingScreen({ navigation }){
     return (
@@ -44,13 +44,14 @@ const styles = StyleSheet.create({
     },
     mainhead: {
         marginTop: 10,
-        fontSize: 53,
+        fontSize: 63,
         textAlign: 'center',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: '300',
+        fontFamily: 'PatrickHand',
     },
     buttons: {
-        marginTop: 50
+        marginTop: 35
     },
     Btn: {
         backgroundColor: '#58BB44',
@@ -61,9 +62,10 @@ const styles = StyleSheet.create({
         marginBottom: 30
     },
     Btntext: {
-        fontSize: 33,
-        fontWeight: '700',
+        fontSize: 32,
+        fontWeight: '500',
         textAlign: 'center',
-        color: '#303031'
+        color: '#303031',
+        fontFamily: 'NunitoBlack'
     },
 })

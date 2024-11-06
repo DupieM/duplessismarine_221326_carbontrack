@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ScrollView, ImageBackground, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, ImageBackground, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native'
 import { handleSignin } from '../services/authService';
 
 function  SignUpScreen({}){
@@ -12,7 +12,7 @@ function  SignUpScreen({}){
     const [isFormValid, setIsFormValid] = useState(false);
     useEffect(() => {
         // Check if all required fields are filled
-        if (username.trim()) {
+        if (username.trim() && email.trim() && password.trim()) {
             setIsFormValid(true);
         } else {
             setIsFormValid(false);
@@ -20,15 +20,19 @@ function  SignUpScreen({}){
     }, [username]);
 
     const handleCreation = async () => {
-        //Need to pass all our data to the function
+        // Alert to make sure password is atleast 6 characters long
+        if (password.length < 6) {
+            Alert.alert("Validation Error", "Password is too short. It must be at least 6 characters.");
+            return;
+        }
 
         //Make sure all the values have been entered - show error/disable button
         if (!isFormValid) {
             Alert.alert("Validation Error", "Please fill all the required fields.");
             return;
         }
-        //switch handlesigning and createuserinfo functions om
 
+        // Sends all the information to Firestore database to create a user
         var infos = {username, email, password}
         var success = await handleSignin(email, password, infos);
         
@@ -96,10 +100,11 @@ const styles = StyleSheet.create({
     },
     mainhead: {
         marginTop: 190,
-        fontSize: 65,
+        fontSize: 75,
         textAlign: 'center',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: '200',
+        fontFamily: 'PatrickHand'
     },
     input: {
         backgroundColor: '#B1E7A7',
@@ -111,14 +116,17 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         width: '80%',
         color: '#00272E',
-        marginTop: 23
+        marginTop: 23,
+        fontFamily: 'NunitoMedium',
+        fontWeight: '200'
     },
     password: {
         marginLeft: 50,
         marginTop: 5,
         marginBottom: 27,
         fontSize: 15,
-        color: '#9BE931'
+        color: '#9BE931',
+        fontFamily: 'NunitoItalic'
     },
     Btn: {
         backgroundColor: '#58BB44',
@@ -130,8 +138,9 @@ const styles = StyleSheet.create({
     },
     Btntext: {
         fontSize: 33,
-        fontWeight: '700',
+        fontWeight: '200',
         textAlign: 'center',
-        color: '#303031'
+        color: '#303031',
+        fontFamily: 'NunitoBlack'
     },
 })

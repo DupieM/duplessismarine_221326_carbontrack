@@ -59,15 +59,20 @@ function  InitiativeScreen({}){
                     onRequestClose={() => setModalVisible(false)}
                 >
                     <View style={styles.modalView}>
-                    <View style={styles.iconRow}>
-                            <Icon name="phone" size={30} color="#C1FF1C" style={styles.icon} />
+                        <View>
+                            <Text style={styles.modalText_head}>{selectedInitiative.name}</Text>
+                        </View>
+                        <View style={styles.iconRow}>
+                            <Icon name="phone" size={35} color="#60B6FF" style={styles.icon} />
                             <Text style={styles.modalText}>{selectedInitiative.phone_number}</Text>
                         </View>
                         <View style={styles.iconRow}>
-                            <Icon name="envelope" size={30} color="#C1FF1C" style={styles.icon} />
+                            <Icon name="envelope" size={35} color="#60B6FF" style={styles.icon} />
                             <Text style={styles.modalText}>{selectedInitiative.email}</Text>
                         </View>
-                        <Button title="Close" onPress={() => setModalVisible(false)} />
+                        <TouchableOpacity style={styles.Btn_two} onPress={() => setModalVisible(false)}>
+                            <Text style={styles.Btn_two_text}>Close</Text>
+                        </TouchableOpacity>
                     </View>
                 </Modal>
             )}
@@ -88,15 +93,11 @@ const styles = StyleSheet.create({
         marginTop: 30
     },
     mainhead: {
-        fontSize: 43,
-        fontWeight: '500',
-        color: 'white'
-    },
-    mainhead2: {
-        marginTop: -10,
-        fontSize: 43,
-        fontWeight: '500',
-        color: 'white'
+        fontSize: 55,
+        fontWeight: '200',
+        color: 'white',
+        fontFamily: 'PatrickHand',
+        marginBottom: -15
     },
     card: {
         marginBottom: 25
@@ -122,27 +123,40 @@ const styles = StyleSheet.create({
     cardparagrap: {
         fontSize: 22,
         color: '#C1FF1C',
-        fontWeight: '500'
+        fontWeight: '300',
+        fontFamily: 'NunitoMedium',
+        marginBottom: 7
     },
     cardparagraptwo: {
         fontSize: 15,
         color: '#C1FF1C',
-        width: 200
+        width: 200,
+        fontFamily: 'NunitoMedium',
+        lineHeight: 17
     },
     cardparagrapthree: {
         fontSize: 13,
         color: '#C1FF1C',
-        marginTop: 10
+        marginTop: 5,
+        fontFamily: 'NunitoMedium',
     },
     modalView: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(48,48,49,0.85)',
+        backgroundColor: 'rgba(48,48,49,0.92)',
+        padding: 7
+    },
+    modalText_head: {
+        fontSize: 34,
+        color: '#C1FF1C',
+        marginBottom: 20,
+        fontFamily: 'NunitoBlack',
+        marginBottom: 40
     },
     modalText: {
-        fontSize: 20,
-        color: '#C1FF1C',
+        fontSize: 25,
+        color: '#96D629',
         marginBottom: 20
     },
     iconRow: {
@@ -150,6 +164,19 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     icon: {
-        marginRight: 20
-    }
+        marginRight: 20,
+    },
+    Btn_two: {
+        backgroundColor: '#58BB44',
+        width: 120,
+        padding: 6,
+        marginTop: 20,
+        borderRadius: 20
+    },
+    Btn_two_text: {
+        color: '#303031',
+        fontFamily: 'NunitoBold',
+        fontSize: 25,
+        textAlign: 'center',
+    },
 });
