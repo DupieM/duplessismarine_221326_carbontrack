@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { handleSignOut } from '../services/authService'
 import { getAnswers } from '../services/DbService'
 import { auth, db } from '../firebase'
 import { collection, getDocs } from 'firebase/firestore'
+import { useFocusEffect } from '@react-navigation/native'
 
 function  LandingScreen({ navigation }){
 
@@ -100,8 +101,8 @@ function  LandingScreen({ navigation }){
 
     
     // To show if theri is an error when loading the page
-    if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
-    if (error) return <Text>Error: {error}</Text>;
+    // if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
+    // if (error) return <Text>Error: {error}</Text>;
 
     // Function to display the Doughnut chart
     const chartConfig = {
@@ -141,7 +142,7 @@ function  LandingScreen({ navigation }){
         <ScrollView style={styles.container}>
             <View style={styles.container2}>
                 <View style={styles.head}>
-                    <Text style={styles.mainhead}>Know your</Text>
+                    <Text style={styles.mainhead}>Know Your</Text>
                     <Text style={styles.mainhead2}>impact</Text>
                 </View>
                 <View>
@@ -154,8 +155,8 @@ function  LandingScreen({ navigation }){
                             <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Tracker')}>
                                 <Image source={require('../assets/Calculate.png')}/>
                                 <Text style={styles.cardparagrap}>
-                                    Calculate{"\n"}
-                                    Footprint
+                                    Footprint{"\n"}
+                                    Tracker
                                 </Text>
                             </TouchableOpacity>
                             <Image style={styles.image} source={require('../assets/planet_earth_1.png')}/>
@@ -174,7 +175,7 @@ function  LandingScreen({ navigation }){
                         </View>
                     </View>
                     <View style={styles.signout}>
-                        <Text style={styles.signouttext}>We hope to see you agin? </Text>
+                        <Text style={styles.signouttext}>We hope to see you again </Text>
                         <TouchableOpacity style={styles.button} onPress={handleSignout}>
                             <Text style={styles.buttontext}>Sign Out</Text>
                         </TouchableOpacity>
@@ -205,10 +206,11 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         color: 'white',
         fontFamily: 'PatrickHand',
-        letterSpacing: 2
+        letterSpacing: 2,
+        marginBottom: 10
     },
     mainhead2: {
-        marginTop: -20,
+        marginTop: -45,
         fontSize: 66,
         fontWeight: '200',
         color: 'white',
@@ -216,11 +218,15 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
         marginBottom: 15
     },
+    chartContainer: {
+        alignItems: 'center',
+        marginVertical: 20,
+    },
     chartImage: {
-        marginLeft: 40,
-        width: 280,
-        height: 160,
-        marginBottom: 10
+        marginLeft: 46,
+        width: 260,
+        height: 140,
+        marginBottom: 7
     },
     graph: {
         marginTop: 20,
@@ -238,7 +244,7 @@ const styles = StyleSheet.create({
     },
     box: {
         flexDirection: 'row',
-        marginTop: 20,
+        marginTop: 14,
     },
     cardone: {
         backgroundColor: '#3AA345',
@@ -253,7 +259,7 @@ const styles = StyleSheet.create({
         height: 94
     },
     cardparagrap: {
-        marginLeft: 15,
+        marginLeft: 16,
         fontSize: 30,
         color: '#C1FF1C',
         fontFamily: 'NunitoMedium'
@@ -279,28 +285,28 @@ const styles = StyleSheet.create({
     },
     signout: {
         flexDirection: 'row',
-        marginTop: 30,
-        marginBottom: 20
+        marginTop: 12,
+        marginBottom: 0
     },
     signouttext: {
         color: 'white',
         marginLeft: 10,
-        fontSize: 19,
+        fontSize: 17,
         marginRight: 10,
-        marginTop: 6,
+        marginTop: 2,
         fontFamily: 'NunitoMedium'
     },
     button: {
         backgroundColor: '#C1FF1C',
         borderRadius: 20,
         width: 100,
-        height: 40,
+        height: 30,
         alignItems: 'center',
     },
     buttontext: {
         fontSize: 19,
         fontWeight: '600',
-        marginTop: 6,
+        marginTop: 1,
         color: '#343436',
         fontFamily: 'NunitoBold'
     }

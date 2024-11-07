@@ -79,7 +79,9 @@ function  ReduceScreen({}){
                             source={{ uri: selectedArticleUrl }} 
                             startInLoadingState={true} 
                         />
-                        <Button title="Close" onPress={closeModal} />
+                        <TouchableOpacity style={styles.btn} onPress={closeModal} >
+                            <Text style={styles.btn_text}>Close</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
@@ -147,4 +149,13 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '90%',
     },
+    btn: {
+        backgroundColor: '#60B6FF',
+        height: 30,
+    },
+    btn_text: {
+        textAlign: 'center',
+        color: '#343436',
+        fontSize: 21
+    }
 });

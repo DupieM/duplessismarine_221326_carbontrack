@@ -126,7 +126,7 @@ export default function App() {
             />
             <Tab.Screen name="Result" component={ResultScreen}
               options={{
-                tabBarLabel: 'Result',
+                tabBarLabel: 'CO₂???',
                 tabBarActiveTintColor: '#58BB44',
                 tabBarInactiveTintColor: 'gray',
                 tabBarIcon: ({size,focused,color}) => {

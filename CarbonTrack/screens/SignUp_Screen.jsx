@@ -26,12 +26,6 @@ function  SignUpScreen({}){
             return;
         }
 
-        //Make sure all the values have been entered - show error/disable button
-        if (!isFormValid) {
-            Alert.alert("Validation Error", "Please fill all the required fields.");
-            return;
-        }
-
         // Sends all the information to Firestore database to create a user
         var infos = {username, email, password}
         var success = await handleSignin(email, password, infos);
@@ -39,6 +33,12 @@ function  SignUpScreen({}){
         if (success) {
         Alert.alert("Sign Up", "You have successfully siged into FunRun.");
         return;
+        }
+
+        //Make sure all the values have been entered - show error/disable button
+        if (!isFormValid) {
+            Alert.alert("Validation Error", "Please fill all the required fields.");
+            return;
         }
     };
 

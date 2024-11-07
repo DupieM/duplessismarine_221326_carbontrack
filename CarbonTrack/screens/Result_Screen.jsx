@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
 import { getAnswers, getOpenAI_Key } from '../services/DbService';
 import { auth, db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
@@ -8,89 +8,85 @@ import { OPENAI_API_KEY } from '@env';
 
 const API_URL = "https://api.openai.com/v1/chat/completions";
 
-function  ResultScreen({ navigation, route }){
-
+function ResultScreen({ navigation, route }) {
     // creating const varibles to call functions and data
-    const { carbonFootprint } = route.params; // retrieve form data from tracker screen
+    const carbonFootprint = route.params?.carbonFootprint || {}; // Use default empty object if undefined
     const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [emissionInsights, setEmissionInsights] = useState('');
-
     const [loadingtwo, setLoadingTwo] = useState(true);
     const [errortwo, setErrortwo] = useState(null);
     const [insights, setInsights] = useState(null);
-    const [opeAi, setOpenAi] = useState([]);
+
+    
 
     // The api call for openAi
     useEffect(() => {
         const callAPIKey = async () => {
-            console.log("callAPIKey function is running");
-
-            try {
-                // Retrieve API key from Firestore
-                console.log("Fetching API key...");
-
-                const apiKey = OPENAI_API_KEY;
-
-                // const prompt = `Give me short insights on these data: dietEmission 1.3 tons CO₂, energyEmission 0.4 tons CO₂, householdEmission 2.7 tons CO₂, totalEmission 4.75 tons CO₂ and transportEmission 0.4 tons CO₂`;
-
-                const prompt = `Provide short insights on these emissions: 
-                - Diet Emission: ${carbonFootprint.dietEmission || 0} tons CO₂,
-                - Energy Emission: ${carbonFootprint.energyEmission || 0} tons CO₂,
-                - Household Emission: ${carbonFootprint.householdEmission || 0} tons CO₂,
-                - Transport Emission: ${carbonFootprint.transportEmission || 0} tons CO₂,
-                - Total Emission: ${carbonFootprint.totalEmission || 0} tons CO₂.`;
-
-                const response = await axios.post(API_URL, {
-                    model: 'gpt-4o-mini',
-                    messages: [
-                        { role: 'system', content: 'You are an assistant.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    temperature: 0.3, // Controls creativity/randomness
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`,
+            // Check if any emission data is available
+            const hasEmissionsData = carbonFootprint.householdEmission || carbonFootprint.transportEmission || carbonFootprint.energyEmission || carbonFootprint.dietEmission;
+    
+            // Only make the API call if there is data to analyze
+            if (hasEmissionsData) {
+                try {
+                    const apiKey = OPENAI_API_KEY;
+                    const prompt = `Provide short insights on these emissions: 
+                    - Diet Emission: ${carbonFootprint.dietEmission || 0} tons CO₂,
+                    - Energy Emission: ${carbonFootprint.energyEmission || 0} tons CO₂,
+                    - Household Emission: ${carbonFootprint.householdEmission || 0} tons CO₂,
+                    - Transport Emission: ${carbonFootprint.transportEmission || 0} tons CO₂,
+                    - Total Emission: ${carbonFootprint.totalEmission || 0} tons CO₂.`;
+    
+                    const response = await axios.post(API_URL, {
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            { role: 'system', content: 'You are an assistant.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.3,
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`,
+                        }
+                    });
+    
+                    setInsights(response.data.choices[0].message.content);
+                } catch (error) {
+                    if (error.response && error.response.status === 429) {
+                        setErrortwo('Rate limit exceeded. Please wait and try again.');
+                    } else {
+                        setErrortwo('Error calling OpenAI API.');
                     }
-                });
-
-                // console.log(response.data.choices[0].message.content); // Log the response's text
-                setInsights(response.data.choices[0].message.content); // Store insights in state
-            } catch (error) {
-                if (error.response && error.response.status === 429) {
-                    console.error('Rate limit exceeded. Please wait and try again.');
-                    setErrortwo('Rate limit exceeded. Please wait and try again.');
-                } else {
-                    console.error('Error calling OpenAI API:', error);
-                    setErrortwo('Error calling OpenAI API.');
+                } finally {
+                    setLoadingTwo(false);
                 }
-            } finally {
-                setLoadingTwo(false);
+            } else {
+                // If no data, set a message or leave insights blank
+                setInsights("Fill in the form on the Tracker Screen to view insights.");
+                setLoadingTwo(false); // Ensure loading state ends
             }
         };
-
+    
         callAPIKey();
-    }, []);
+    }, [carbonFootprint]);
 
     // Function to retrieve the carbonfootrpisnt from the user that is logged in currently
     const fetchYourCarbonFootprintIds = async (uid) => {
         if (!uid) {
-          console.error('UID is missing. Cannot fetch carbon footprint IDs.');
-          return [];
+            console.error('UID is missing. Cannot fetch carbon footprint IDs.');
+            return [];
         }
-    
+
         try {
-          const carbonFootprintsRef = collection(db, 'users', uid, 'carbonFootprints');
-          const querySnapshot = await getDocs(carbonFootprintsRef);
-          const ids = querySnapshot.docs.map(doc => doc.id); // Get the document IDs
-          console.log("Fetched Carbon Footprint IDs:", ids); // Debugging line
-          return ids; // Return an array of IDs
+            const carbonFootprintsRef = collection(db, 'users', uid, 'carbonFootprints');
+            const querySnapshot = await getDocs(carbonFootprintsRef);
+            return querySnapshot.docs.map(doc => doc.id);
         } catch (error) {
-          console.error('Error fetching carbon footprint IDs:', error);
-          return []; // Return an empty array on error
+            console.error('Error fetching carbon footprint IDs:', error);
+            return [];
         }
     };
 
@@ -105,53 +101,44 @@ function  ResultScreen({ navigation, route }){
         };
         fetchCarbonFootprintIds();
     }, []);
-    
+
     // function to call the ansers that is retrieved from firestore to plot on charts
     useEffect(() => {
-        if (carbonFootprintIds && carbonFootprintIds.length > 0) {
-            const fetchData = async () => {
-                try {
+        const fetchData = async () => {
+            try {
+                if (carbonFootprintIds && carbonFootprintIds.length > 0) {
                     const uid = auth.currentUser?.uid;
                     const retrievedAnswers = await getAnswers(uid, carbonFootprintIds);
-                    setAnswers(retrievedAnswers || []); // Fallback to empty array if undefined
-                } catch (err) {
-                    setError("Error retrieving answers");
-                    console.error("Error retrieving answers:", err);
-                } finally {
-                    setLoading(false);
+                    setAnswers(retrievedAnswers || []);
                 }
-            };
-            fetchData();
-        } else {
-            setLoading(false); // If no IDs are available, stop loading
-        }
+            } catch (err) {
+                setError("Error retrieving answers");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, [carbonFootprintIds]);
 
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
     if (error) return <Text>Error: {error}</Text>;
 
-    const totalEmissions = (answers || []) // Fallback to empty array if answers is undefined
-        .map(answer => answer.result?.totalEmission)
-        .filter(emission => emission !== undefined);
-
-    // Sort the answers based on timestamp in ascending order
-    const sortedAnswers = (answers || []).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-    // Generate date labels from the sorted answers
-    const dateLabels = sortedAnswers.map(answer => {
+    // Data processing for charts and charts URLs
+    const totalEmissions = answers.map(answer => answer.result?.totalEmission).filter(emission => emission !== undefined);
+    const dateLabels = answers.map(answer => {
         const date = new Date(answer.timestamp);
         return date.toLocaleDateString(undefined, { month: '2-digit', year: '2-digit' });
     });
 
     //Quickchart url for bar chart of total emission
-    const barChartConfig = {
-        type: 'bar', 
+    const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify({
+        type: 'bar',
         data: {
             labels: dateLabels,
             datasets: [{
                 label: 'Total CO₂',
                 data: totalEmissions,
-                backgroundColor: '#96D629', // Bar color
+                backgroundColor: '#96D629',
                 borderColor: '#96D629',
                 borderWidth: 1,
             }]
@@ -203,22 +190,26 @@ function  ResultScreen({ navigation, route }){
                 borderWidth: 1
             }
         }
-    };
 
-    const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(barChartConfig))}`;
+    }))}`;
 
     // Extract emissions data
-    const emissionsData = [carbonFootprint.householdEmission || 0, carbonFootprint.transportEmission || 0, carbonFootprint.energyEmission || 0, carbonFootprint.dietEmission || 0];
+    const hasEmissionsData = carbonFootprint.householdEmission || carbonFootprint.transportEmission || carbonFootprint.energyEmission || carbonFootprint.dietEmission;
 
     //Quickchart url for polar area chart for breakdown of emission data
-    const chartConfig = {
+    const chartUrl = hasEmissionsData ? `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify({
         type: 'polarArea',
         data: {
             labels: ['Home', 'Transportation', 'Energy', 'Diet'],
             datasets: [{
-                data: emissionsData.map(value => value || 0),
+                data: [
+                    carbonFootprint.householdEmission || 0,
+                    carbonFootprint.transportEmission || 0,
+                    carbonFootprint.energyEmission || 0,
+                    carbonFootprint.dietEmission || 0
+                ],
                 backgroundColor: ['#f5c542', '#60B6FF', '#42f5a1', '#f54242'],
-                borderWidth: 0   // home - transport - energy - diet
+                borderWidth: 0
             }],
         },
         options: {
@@ -257,9 +248,8 @@ function  ResultScreen({ navigation, route }){
                 }
             }
         }
-    };
 
-    const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
+    }))}` : null;
 
     return (
         <ScrollView style={styles.container}>
@@ -268,40 +258,29 @@ function  ResultScreen({ navigation, route }){
                 <Text style={styles.mainhead2}>Footprint</Text>
                 <Text style={styles.subhead}>Insights based on your carbon footprint data below</Text>
             </View>
-            <View>
-                <View>
-                    <Image
-                        style={styles.chartImage}
-                        source={{ uri: barChartUrl }}
-                        resizeMode="contain"
-                    />
-                </View>
-            </View>
-            <View>
-                <Image
-                    style={styles.chartImageTwo}
-                    source={{ uri: chartUrl }}
-                    resizeMode="contain"
-                />
-            </View>
+            <Image style={styles.chartImage} source={{ uri: barChartUrl }} resizeMode="contain" />
+            {chartUrl ? (
+                <Image style={styles.chartImageTwo} source={{ uri: chartUrl }} resizeMode="contain" />
+            ) : (
+                <Text style={styles.noDataMessage}>Fill in the form on the Tracker Screen to view detailed data</Text>
+            )}
             <View>
                 <Text style={styles.Insights_head}>Emission Insights</Text>
-                <View>
-                    <Text style={styles.Insights_body}>{insights}</Text>
-                </View>
+                <Text style={styles.Insights_body}>
+                    {insights || "Fill in the form to view data on Tracker Screen"}
+                </Text>
             </View>
             <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce')}>
                 <Text style={styles.cardparagrap2}>
-                    Tips to reduce{"\n"}
-                    footprint
+                    Tips to reduce{"\n"}footprint
                 </Text>
                 <Image style={styles.tips} source={require('../assets/Tips.png')}/>
             </TouchableOpacity>
         </ScrollView>
-    )
+    );
 }
 
-export default ResultScreen
+export default ResultScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -383,9 +362,16 @@ const styles = StyleSheet.create({
         color: '#C1FF1C',
         fontSize: 20,
         letterSpacing: 2,
-        marginLeft: 30,
+        marginLeft: 40,
         marginRight: 30,
-        textAlign: 'center',
+        textAlign: 'left',
         fontFamily: 'NunitoMedium',
-    }
+    },
+    noDataMessage: { 
+        fontSize: 16, 
+        color: '#C1FF1C', 
+        textAlign: 'center', 
+        marginTop: 20 
+    },
 });
+

@@ -183,7 +183,7 @@ const SwipeableCard = ({ label }) => {
         <Animated.View style={[styles.card, animatedCardStyle]}>
           <Text style={styles.cardText}>Household Occupants</Text>
           <TextInput style={styles.input} 
-          placeholder="Enter number" 
+          placeholder="Enter number of people" 
           keyboardType="numeric" 
           placeholderTextColor="white"
           Value={householdOccupants}
@@ -192,8 +192,12 @@ const SwipeableCard = ({ label }) => {
           <View>
             <Text style={styles.cardText}>Type of Transport used</Text>
             <Dropdown
-              style={[styles.input]}
+              style={[
+                styles.input,
+                isFocus ? styles.dropdownActive : null,
+              ]}
               placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
               data={data}
               maxHeight={300}
               fontSize={50}
@@ -209,6 +213,9 @@ const SwipeableCard = ({ label }) => {
                 setIsFocus(false);
                 setTransportUsed(item.value);
               }}
+              containerStyle={styles.dropdownContainer} // style for dropdown options container
+              itemStyle={styles.itemStyle} // style for individual dropdown items
+              selectedItemStyle={styles.selectedItemStyle} // style for selected dropdown item
             />
           </View>
           <Text style={styles.cardText}>Kilometers traveled per year</Text>
@@ -237,14 +244,18 @@ const SwipeableCard = ({ label }) => {
           <View>
             <Text style={styles.cardText}>Type of energy used</Text>
             <Dropdown
-              style={[styles.input]}
+              style={[
+                styles.input,
+                isFocus ? styles.dropdownActive : null,
+              ]}
               placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
               data={data_two}
               maxHeight={300}
               fontSize={50}
               labelField="label"
               valueField="value"
-              placeholder='Choose Transportation Type'
+              placeholder='Choose Energy Type'
               placeholderTextColor="white"
               value={valuetwo}
               onFocus={() => setIsFocusTwo(true)}
@@ -254,19 +265,26 @@ const SwipeableCard = ({ label }) => {
                 setIsFocusTwo(false);
                 setEnergyType(item.value);
               }}
+              containerStyle={styles.dropdownContainer} // style for dropdown options container
+              itemStyle={styles.itemStyle} // style for individual dropdown items
+              selectedItemStyle={styles.selectedItemStyle} // style for selected dropdown item
             />
           </View> 
           <View>
             <Text style={styles.cardText}>Diet preferences</Text>
             <Dropdown
-              style={[styles.input]}
+              style={[
+                styles.input,
+                isFocus ? styles.dropdownActive : null,
+              ]}
               placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
               data={data_three}
               maxHeight={300}
               fontSize={50}
               labelField="label"
               valueField="value"
-              placeholder='Choose Transportation Type'
+              placeholder='Choose Diet Preference'
               placeholderTextColor="white"
               value={valuethree}
               onFocus={() => setIsFocusThree(true)}
@@ -276,19 +294,26 @@ const SwipeableCard = ({ label }) => {
                 setIsFocusThree(false);
                 setDietPreferences(item.value);
               }}
+              containerStyle={styles.dropdownContainer} // style for dropdown options container
+              itemStyle={styles.itemStyle} // style for individual dropdown items
+              selectedItemStyle={styles.selectedItemStyle} // style for selected dropdown item
             />
           </View>
           <View>
             <Text style={styles.cardText}>Do you recycle</Text>
             <Dropdown
-              style={[styles.input]}
+              style={[
+                styles.input,
+                isFocus ? styles.dropdownActive : null,
+              ]}
               placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
               data={data_four}
               maxHeight={300}
               fontSize={50}
               labelField="label"
               valueField="value"
-              placeholder='Choose Transportation Type'
+              placeholder='Choose Yes/No'
               placeholderTextColor="white"
               value={valuefour}
               onFocus={() => setIsFocusFour(true)}
@@ -298,6 +323,9 @@ const SwipeableCard = ({ label }) => {
                 setIsFocusFour(false);
                 setRecycle(item.value);
               }}
+              containerStyle={styles.dropdownContainer} // style for dropdown options container
+              itemStyle={styles.itemStyle} // style for individual dropdown items
+              selectedItemStyle={styles.selectedItemStyle} // style for selected dropdown item
             />
           </View>
           <TouchableOpacity  style={styles.Btn} onPress={handleSubmit}>
@@ -436,6 +464,25 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     color: 'white'
+  },
+  selectedTextStyle: {
+    color: 'white',
+  },
+  dropdownActive: {
+    backgroundColor: '#00502D',
+  },
+  dropdownContainer: {
+    backgroundColor: '#96D629',
+    borderRadius: 8,
+  },
+  itemStyle: {
+    padding: 10,
+    backgroundColor: '#60B6FF', 
+    color: 'black', 
+  },
+  selectedItemStyle: {
+    backgroundColor: 'blue', 
+    color: 'white', 
   },
   modalContainer: { 
     flex: 1, 
