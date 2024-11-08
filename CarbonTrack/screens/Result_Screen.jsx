@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, Button } from 'react-native';
 import { getAnswers, getOpenAI_Key } from '../services/DbService';
 import { auth, db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
 import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native'
+import { Ionicons } from '@expo/vector-icons';
 
 const API_URL = "https://api.openai.com/v1/chat/completions";
 
@@ -98,48 +100,35 @@ function ResultScreen({ navigation, route }) {
         }
     };
 
-    // function to fetch uid of user that is logged in
-    useEffect(() => {
-        const fetchCarbonFootprintIds = async () => {
+    // Fetch the user's carbon footprint answers
+    const fetchAnswers = async () => {
+        setLoading(true);
+        try {
             const uid = auth.currentUser?.uid;
-            if (uid) {
-                const ids = await fetchYourCarbonFootprintIds(uid);
-                setCarbonFootprintIds(ids);
+            const ids = await fetchYourCarbonFootprintIds(uid);
+            setCarbonFootprintIds(ids);
+            
+            if (ids && ids.length > 0) {
+                const retrievedAnswers = await getAnswers(uid, ids);
+                setAnswers(retrievedAnswers || []);
             }
-        };
-        fetchCarbonFootprintIds();
-    }, []);
-
-    // function to call the ansers that is retrieved from firestore to plot on charts
-    useEffect(() => {
-        if (carbonFootprintIds && carbonFootprintIds.length > 0) {
-            const fetchData = async () => {
-                try {
-                    const uid = auth.currentUser?.uid;
-                    const retrievedAnswers = await getAnswers(uid, carbonFootprintIds);
-                    setAnswers(retrievedAnswers || []); // Fallback to empty array if undefined
-                    console.log('Hallo:', retrievedAnswers);
-                } catch (err) {
-                    setError("Error retrieving answers");
-                    console.error("Error retrieving answers:", err);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchData();
-        } else {
-            setLoading(false); // If no IDs are available, stop loading
+        } catch (err) {
+            setError("Error retrieving answers");
+            console.error("Error retrieving answers:", err);
+        } finally {
+            setLoading(false);
         }
-    }, [carbonFootprintIds]);
-    
-  
+    };
 
-    if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
-    if (error) return <Text>Error: {error}</Text>;
+    useFocusEffect(
+        useCallback(() => {
+            fetchAnswers();
+        }, [])
+    );
 
-    // useEffect(() => {
-    //     console.log("Retrieved answers:", answers);
-    // }, [answers]);
+    const handleRefresh = () => {
+        fetchAnswers();  // Re-fetch answers when refresh button is pressed
+    };
 
     console.log("Retrieved answers:", answers);
 
@@ -157,68 +146,81 @@ function ResultScreen({ navigation, route }) {
         return date.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' });
     });
 
-    //Quickchart url for bar chart of total emission
-    const barChartConfig = {
-        type: 'bar', 
-        data: {
-            labels: dateLabels,
-            datasets: [{
-                label: 'Total CO₂',
-                data: totalEmissions,
-                backgroundColor: '#96D629', // Bar color
-                borderColor: '#96D629',
-                borderWidth: 1,
-            }]
-        },
-        options: {
-            plugins: {
-                datalabels: {
-                    color: 'white',  // Text color for the data labels
-                    anchor: 'end',  // Positions the labels at the end of each bar
-                    align: 'top',   // Aligns labels at the top of the bars
-                    font: {
-                        size: 12,
-                        weight: 'bold'
-                    },
-                    formatter: (value) => `${value} CO₂`  // Display value with CO₂ unit
-                }
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        fontColor: 'white', // Y-axis text color
-                        callback: function(value) { return `${value} CO₂`; }
-                    },
-                }],
-                xAxes: [{
-                    ticks: {
-                        fontColor: 'white' // X-axis text color
-                    },
+    // Quickchart url for bar chart of total emission
+    const generateBarChartUrl = () => {
+        const totalEmissions = (answers || [])
+            .map(answer => answer.result?.totalEmission)
+            .filter(emission => emission !== undefined);
+
+        const sortedAnswers = (answers || []).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        const dateLabels = sortedAnswers.map(answer => {
+            const date = new Date(answer.timestamp);
+            return date.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' });
+        });
+
+        const barChartConfig = {
+            type: 'bar', 
+            data: {
+                labels: dateLabels,
+                datasets: [{
+                    label: 'Total CO₂',
+                    data: totalEmissions,
+                    backgroundColor: '#96D629', // Bar color
+                    borderColor: '#96D629',
+                    borderWidth: 1,
                 }]
             },
-            title: {
-                display: true,
-                text: 'Your Emissions Over Time',
-                fontSize: 20,
-                fontColor: 'white' // Title text color
-            },
-            legend: {
-                labels: {
-                    fontColor: 'white' // Legend text color
+            options: {
+                plugins: {
+                    datalabels: {
+                        color: 'white',  // Text color for the data labels
+                        anchor: 'end',  // Positions the labels at the end of each bar
+                        align: 'top',   // Aligns labels at the top of the bars
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        },
+                        formatter: (value) => `${value} CO₂`  // Display value with CO₂ unit
+                    }
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: 'white', // Y-axis text color
+                            callback: function(value) { return `${value} CO₂`; }
+                        },
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontColor: 'white' // X-axis text color
+                        },
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'Your Emissions Over Time',
+                    fontSize: 20,
+                    fontColor: 'white' // Title text color
+                },
+                legend: {
+                    labels: {
+                        fontColor: 'white' // Legend text color
+                    }
+                },
+                tooltips: {
+                    titleFontColor: 'white',
+                    bodyFontColor: 'white',
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    borderColor: 'white',
+                    borderWidth: 1
                 }
-            },
-            tooltips: {
-                titleFontColor: 'white',
-                bodyFontColor: 'white',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                borderColor: 'white',
-                borderWidth: 1
-            }
-        }
+            }}
+
+        return `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(barChartConfig))}`;
     };
 
-    const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(barChartConfig))}`;
+    const barChartUrl = generateBarChartUrl();
 
     // Extract emissions data
     const hasEmissionsData = carbonFootprint.householdEmission || carbonFootprint.transportEmission || carbonFootprint.energyEmission || carbonFootprint.dietEmission;
@@ -291,7 +293,14 @@ function ResultScreen({ navigation, route }) {
                 <Text style={styles.mainhead2}>Footprint</Text>
                 <Text style={styles.subhead}>Insights based on your carbon footprint data below</Text>
             </View>
+
+            {/* <Button title="Refresh" onPress={handleRefresh}/> */}
+            <TouchableOpacity onPress={handleRefresh}>
+            <Ionicons name="refresh" size={30} color="white" />
+            </TouchableOpacity>
+
             <Image style={styles.chartImage} source={{ uri: barChartUrl }} resizeMode="contain" />
+
             {chartUrl ? (
                 <Image style={styles.chartImageTwo} source={{ uri: chartUrl }} resizeMode="contain" />
             ) : (
@@ -406,6 +415,17 @@ const styles = StyleSheet.create({
         textAlign: 'center', 
         marginTop: 10,
         marginBottom: 30
+    },
+    refreshButton: {
+        backgroundColor: '#96D629',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginVertical: 15,
+    },
+    refreshText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
 });
 

@@ -194,7 +194,7 @@ const SwipeableCard = ({ label }) => {
     { label: 'Omnivore', value: 1.00 },
     { label: 'No Beef', value: 0.79 },
     { label: 'Vegatarian', value: 0.66 },
-    { label: 'vegan', value: 0.56 }
+    { label: 'Vegan', value: 0.56 }
   ]
 
   //Dropdown box for recycle
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   modalContainer_two: {
     width: 340,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#007541',
     borderRadius: 10,
     alignItems: 'left',
   },
@@ -445,14 +445,16 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     fontFamily: 'NunitoBold',
     lineHeight: 37,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   modelSubhead_two: {
     marginTop: 4,
     marginBottom: 7,
     fontSize: 18,
     fontFamily: 'NunitoMedium',
-    lineHeight: 20
+    lineHeight: 20,
+    color: 'white'
   },
   modalText_two: {
     fontSize: 21,
@@ -460,7 +462,8 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontFamily: 'Nunito',
     lineHeight: 23,
-    fontWeight: '300'
+    fontWeight: '300',
+    color: 'white'
   },
   Btn_three: {
     backgroundColor: '#58BB44',
