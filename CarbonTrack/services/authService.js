@@ -1,5 +1,5 @@
 // Firebase Auth Functions
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, getAuth} from "firebase/auth";
 import { auth, db } from "../firebase";
 import { createUserInformation } from "./DbService";
 
@@ -20,6 +20,17 @@ export const handleLogin = async (email, password) => {
     });
 
 }
+
+// Reset password of account
+export const resetPassword = async (email) => {
+  try {
+    const authInstance = getAuth();
+    await sendPasswordResetEmail(authInstance, email);
+    console.log("Password reset email sent.");
+  } catch (error) {
+    console.error("Error resetting password:", error.message);
+  }
+};
 
 // Create an account
 export const handleSignin = async (email, password, info) => {

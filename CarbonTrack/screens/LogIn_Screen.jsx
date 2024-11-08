@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ScrollView, ImageBackground, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native'
-import { googlesignin, handleLogin } from '../services/authService';
+import { View, Text, ScrollView, ImageBackground, StyleSheet, TextInput, TouchableOpacity, Alert, Modal } from 'react-native'
+import { googlesignin, handleLogin, resetPassword } from '../services/authService';
 
 function  LogInScreen({ navigation }){
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
 
     // Login Function
     const [isFormValid, setIsFormValid] = useState(false);
@@ -33,7 +35,22 @@ function  LogInScreen({ navigation }){
           return;
         }
         
-      }
+    }
+
+    // Handle password reset
+    const handleForgotPassword = async () => {
+        if (!email) {
+            Alert.alert("Forgot Password", "Please enter your email address first.");
+            return;
+        }
+        
+        try {
+            await resetPassword(email);
+            Alert.alert("Password Reset", "A password reset email has been sent.");
+        } catch (error) {
+            Alert.alert("Error", error.message);
+        }
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -50,15 +67,18 @@ function  LogInScreen({ navigation }){
                         <TextInput style={styles.input} placeholder='Password'
                         onChangeText={newText => setPassword(newText)}
                         defaultValue={password}
-                        secureTextEntry={true}
+                        // secureTextEntry={true}
                         />
-                        <Text style={styles.password}>Forgot Password?</Text>
+                        <Text style={styles.password} onPress={handleForgotPassword}>
+                            Forgot Password?
+                        </Text>
                     </View>
                     <View>
                         <TouchableOpacity style={styles.Btn} onPress={login}>
                             <Text style={styles.Btntext}>Proceed</Text>
                         </TouchableOpacity>
                     </View>
+
                 </View>
             </ImageBackground>
         </ScrollView>
@@ -137,12 +157,5 @@ const styles = StyleSheet.create({
     signup: {
         textAlign: 'center',
         color: '#343436'
-    },
-    link: {
-        marginLeft: 6,
-        textAlign: 'center',
-        color: '#343436',
-        textDecorationLine: 'underline',
-        marginBottom: 40
     },
 })

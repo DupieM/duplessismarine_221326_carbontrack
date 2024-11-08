@@ -4,13 +4,15 @@ import axios from 'axios';
 import WebView from 'react-native-webview';
 import { GOOGLE_API_KEY, SEARCH_ENGINE_ID } from '@env';
 
-function  ReduceScreen({}){
+function ReduceScreen({ route }){
 
+    const Emission = route.params;
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
     const [selectedArticleUrl, setSelectedArticleUrl] = useState(null); // URL of the selected article
+
+    console.log('Data:', Emission)
 
     // Function to fetch tips/articles from Google Custom Search API
     const fetchArticles = async () => {

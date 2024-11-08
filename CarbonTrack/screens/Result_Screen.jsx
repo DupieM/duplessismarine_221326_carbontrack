@@ -5,6 +5,7 @@ import { auth, db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
+import { useNavigation } from '@react-navigation/native';
 
 const API_URL = "https://api.openai.com/v1/chat/completions";
 
@@ -65,7 +66,7 @@ function ResultScreen({ navigation, route }) {
                 }
             } else {
                 // If no data, set a message or leave insights blank
-                setInsights("Fill in the form on the Tracker Screen to view insights.");
+                setInsights("View insights for your carbon footprint, once calculated");
                 setLoadingTwo(false); // Ensure loading state ends
             }
         };
@@ -73,7 +74,12 @@ function ResultScreen({ navigation, route }) {
         callAPIKey();
     }, [carbonFootprint]);
 
-    // Function to retrieve the carbonfootrpisnt from the user that is logged in currently
+     // Helper function to remove all instances of '**' from text
+     const removeAsterisks = (text) => {
+        return text ? text.replace(/\*\*/g, '') : '';
+    };
+
+    // Function to retrieve the carbonfootprint from the user that is logged in currently
     const fetchYourCarbonFootprintIds = async (uid) => {
         if (!uid) {
             console.error('UID is missing. Cannot fetch carbon footprint IDs.');
@@ -83,7 +89,9 @@ function ResultScreen({ navigation, route }) {
         try {
             const carbonFootprintsRef = collection(db, 'users', uid, 'carbonFootprints');
             const querySnapshot = await getDocs(carbonFootprintsRef);
-            return querySnapshot.docs.map(doc => doc.id);
+            const ids = querySnapshot.docs.map(doc => doc.id); // Get the document IDs
+          console.log("Fetched Carbon Footprint IDs:", ids); // Debugging line
+          return ids; // Return an array of IDs
         } catch (error) {
             console.error('Error fetching carbon footprint IDs:', error);
             return [];
@@ -104,41 +112,60 @@ function ResultScreen({ navigation, route }) {
 
     // function to call the ansers that is retrieved from firestore to plot on charts
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (carbonFootprintIds && carbonFootprintIds.length > 0) {
+        if (carbonFootprintIds && carbonFootprintIds.length > 0) {
+            const fetchData = async () => {
+                try {
                     const uid = auth.currentUser?.uid;
                     const retrievedAnswers = await getAnswers(uid, carbonFootprintIds);
-                    setAnswers(retrievedAnswers || []);
+                    setAnswers(retrievedAnswers || []); // Fallback to empty array if undefined
+                    console.log('Hallo:', retrievedAnswers);
+                } catch (err) {
+                    setError("Error retrieving answers");
+                    console.error("Error retrieving answers:", err);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (err) {
-                setError("Error retrieving answers");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
+            };
+            fetchData();
+        } else {
+            setLoading(false); // If no IDs are available, stop loading
+        }
     }, [carbonFootprintIds]);
+    
+  
 
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
     if (error) return <Text>Error: {error}</Text>;
 
+    // useEffect(() => {
+    //     console.log("Retrieved answers:", answers);
+    // }, [answers]);
+
+    console.log("Retrieved answers:", answers);
+
     // Data processing for charts and charts URLs
-    const totalEmissions = answers.map(answer => answer.result?.totalEmission).filter(emission => emission !== undefined);
-    const dateLabels = answers.map(answer => {
+    const totalEmissions = (answers || []) // Fallback to empty array if answers is undefined
+        .map(answer => answer.result?.totalEmission)
+        .filter(emission => emission !== undefined);
+
+    // Sort the answers based on timestamp in ascending order
+    const sortedAnswers = (answers || []).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    // Generate date labels from the sorted answers
+    const dateLabels = sortedAnswers.map(answer => {
         const date = new Date(answer.timestamp);
-        return date.toLocaleDateString(undefined, { month: '2-digit', year: '2-digit' });
+        return date.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' });
     });
 
     //Quickchart url for bar chart of total emission
-    const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify({
-        type: 'bar',
+    const barChartConfig = {
+        type: 'bar', 
         data: {
             labels: dateLabels,
             datasets: [{
                 label: 'Total CO₂',
                 data: totalEmissions,
-                backgroundColor: '#96D629',
+                backgroundColor: '#96D629', // Bar color
                 borderColor: '#96D629',
                 borderWidth: 1,
             }]
@@ -178,8 +205,7 @@ function ResultScreen({ navigation, route }) {
             },
             legend: {
                 labels: {
-                    fontColor: 'white', // Legend text color
-                    fontFamily: 'NunitoMedium'
+                    fontColor: 'white' // Legend text color
                 }
             },
             tooltips: {
@@ -190,8 +216,9 @@ function ResultScreen({ navigation, route }) {
                 borderWidth: 1
             }
         }
+    };
 
-    }))}`;
+    const barChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(barChartConfig))}`;
 
     // Extract emissions data
     const hasEmissionsData = carbonFootprint.householdEmission || carbonFootprint.transportEmission || carbonFootprint.energyEmission || carbonFootprint.dietEmission;
@@ -251,6 +278,12 @@ function ResultScreen({ navigation, route }) {
 
     }))}` : null;
 
+    // Pass the carbonfootprint to the reduce screen
+    // const reducescreennavigate = () => {
+    //     navigation.navigate('Reduce', { Emission: carbonFootprint })
+    // }
+
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.head}>
@@ -262,15 +295,15 @@ function ResultScreen({ navigation, route }) {
             {chartUrl ? (
                 <Image style={styles.chartImageTwo} source={{ uri: chartUrl }} resizeMode="contain" />
             ) : (
-                <Text style={styles.noDataMessage}>Fill in the form on the Tracker Screen to view detailed data</Text>
+                <Text style={styles.noDataMessage}>Go to Track to work out your current carbon footprint</Text>
             )}
             <View>
                 <Text style={styles.Insights_head}>Emission Insights</Text>
                 <Text style={styles.Insights_body}>
-                    {insights || "Fill in the form to view data on Tracker Screen"}
+                    {removeAsterisks(insights) || "Loading...."}
                 </Text>
             </View>
-            <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce')}>
+            <TouchableOpacity style={styles.cardone} onPress={() => navigation.navigate('Reduce', { Emission: carbonFootprint })}>
                 <Text style={styles.cardparagrap2}>
                     Tips to reduce{"\n"}footprint
                 </Text>
@@ -371,7 +404,8 @@ const styles = StyleSheet.create({
         fontSize: 16, 
         color: '#C1FF1C', 
         textAlign: 'center', 
-        marginTop: 20 
+        marginTop: 10,
+        marginBottom: 30
     },
 });
 

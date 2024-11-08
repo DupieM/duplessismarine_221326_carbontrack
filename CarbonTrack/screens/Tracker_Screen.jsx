@@ -8,12 +8,16 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native'; // Import this hook
 import axios from 'axios';
 import { calculateCarbonFootprint } from '../sub-services/calculation';
+import { Ionicons } from '@expo/vector-icons';
 
 const cardData = [
   { id: 1, label: 'Swipe left to continue ' },
 ];
 
 function TrackerScreen({ navigation }) {
+
+  const [infoVisible, setInfoVisible] = useState(false);
+
   return (
     <ScrollView>
       <GestureHandlerRootView style={styles.container}>
@@ -25,6 +29,31 @@ function TrackerScreen({ navigation }) {
           <Text style={styles.subText}>Track your impact</Text>
           <Text style={styles.subText}>on the environment</Text>
         </View>
+
+        {/* Info icon with modal */}
+        <TouchableOpacity onPress={() => setInfoVisible(true)} style={styles.infoIcon}>
+          <Ionicons name="information-circle-outline" size={30} color="white" />
+        </TouchableOpacity>
+
+        {/* Modal for form instructions */}
+        <Modal visible={infoVisible} transparent={true} animationType="slide">
+          <View style={styles.modalBackground_two}>
+            <View style={styles.modalContainer_two}>
+              <Text style={styles.modalTitle_two}>How to Fill Out the Form</Text>
+              <Text style={styles.modelSubhead_two}>To calculate your carbon footprint you need to supply us with the following information.</Text>
+              <Text style={styles.modalText_two}>1. Enter the number of people living in your household.</Text>
+              <Text style={styles.modalText_two}>2. Select the type of transport you most frequently use.</Text>
+              <Text style={styles.modalText_two}>3. Input the kilometers you travel per year per road.</Text>
+              <Text style={styles.modalText_two}>4. Specify your annual kWh energy consumption in your household.</Text>
+              <Text style={styles.modalText_two}>5. Choose your primary diet preference.</Text>
+              <Text style={styles.modalText_two}>6. Indicate if you recycle or not.</Text>
+              <TouchableOpacity style={styles.Btn_three} onPress={() => setInfoVisible(false)}>
+                <Text style={styles.Btn_three_text}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
 
         {cardData.map((card) => (
           <SwipeableCard key={card.id} label={card.label} navigation={navigation}/>
@@ -392,8 +421,64 @@ const styles = StyleSheet.create({
     color: '#C1FF1C',
     fontFamily: 'NunitoMedium',
   },
+  infoIcon: {
+    position: 'absolute',
+    top: 250,
+    right: 30,
+  },
+  modalBackground_two: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer_two: {
+    width: 340,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'left',
+  },
+  modalTitle_two: {
+    fontSize: 33,
+    fontWeight: '300',
+    marginBottom: 0,
+    fontFamily: 'NunitoBold',
+    lineHeight: 37,
+    textAlign: 'center'
+  },
+  modelSubhead_two: {
+    marginTop: 4,
+    marginBottom: 7,
+    fontSize: 18,
+    fontFamily: 'NunitoMedium',
+    lineHeight: 20
+  },
+  modalText_two: {
+    fontSize: 21,
+    marginBottom: 5,
+    textAlign: 'left',
+    fontFamily: 'Nunito',
+    lineHeight: 23,
+    fontWeight: '300'
+  },
+  Btn_three: {
+    backgroundColor: '#58BB44',
+    width: 140,
+    padding: 3,
+    marginTop: 10,
+    borderRadius: 20,
+    marginLeft: 80
+  },
+  Btn_three_text: {
+    color: '#303031',
+    fontFamily: 'NunitoBold',
+    fontSize: 27,
+    textAlign: 'center',
+  },
   swipeableContainer: {
-    marginBottom: 40
+    marginBottom: 40,
+    marginLeft: 13
   },
   card: {
     backgroundColor: '#55A545',

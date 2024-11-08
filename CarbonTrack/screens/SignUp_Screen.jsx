@@ -9,36 +9,26 @@ function  SignUpScreen({}){
     const [username, setUserName] = useState('');
 
     //Sign up Function
-    const [isFormValid, setIsFormValid] = useState(false);
-    useEffect(() => {
-        // Check if all required fields are filled
-        if (username.trim() && email.trim() && password.trim()) {
-            setIsFormValid(true);
-        } else {
-            setIsFormValid(false);
-        }
-    }, [username]);
-
     const handleCreation = async () => {
-        // Alert to make sure password is atleast 6 characters long
+        // Validate all required fields are filled
+        if (!username.trim() || !email.trim() || !password.trim()) {
+            Alert.alert("Validation Error", "Please fill all the required fields.");
+            return;
+        }
+    
+        // Check password length
         if (password.length < 6) {
             Alert.alert("Validation Error", "Password is too short. It must be at least 6 characters.");
             return;
         }
-
-        // Sends all the information to Firestore database to create a user
-        var infos = {username, email, password}
+    
+        // Send information to Firestore to create a user
+        var infos = { username, email, password };
         var success = await handleSignin(email, password, infos);
-        
+    
+        // Check success of the sign-up process
         if (success) {
-        Alert.alert("Sign Up", "You have successfully siged into FunRun.");
-        return;
-        }
-
-        //Make sure all the values have been entered - show error/disable button
-        if (!isFormValid) {
-            Alert.alert("Validation Error", "Please fill all the required fields.");
-            return;
+            Alert.alert("Sign Up", "You have successfully signed into FunRun.");
         }
     };
 
@@ -65,7 +55,6 @@ function  SignUpScreen({}){
                         defaultValue={password}
                         secureTextEntry={true}
                         />
-                        <Text style={styles.password}>Forgot Password?</Text>
                     </View>
                     <View>
                         <TouchableOpacity style={styles.Btn} onPress={handleCreation}>
@@ -134,7 +123,8 @@ const styles = StyleSheet.create({
         marginLeft: 85,
         padding: 6,
         borderRadius: 50,
-        marginBottom: 25
+        marginBottom: 25,
+        marginTop: 30
     },
     Btntext: {
         fontSize: 33,

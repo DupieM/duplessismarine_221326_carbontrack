@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIn
 import { handleSignOut } from '../services/authService'
 import { getAnswers } from '../services/DbService'
 import { auth, db } from '../firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import { useFocusEffect } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function  LandingScreen({ navigation }){
 
@@ -16,7 +17,7 @@ function  LandingScreen({ navigation }){
     // All the useStates to set answers 
     const [averageEmission, setAverageEmission] = useState(null);
     const globalAverage = 4.7;
-    const [carbonFootprintIds, setCarbonFootprintIds] = useState(null);
+    const [carbonFootprintIds, setCarbonFootprintIds] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -33,6 +34,9 @@ function  LandingScreen({ navigation }){
           const querySnapshot = await getDocs(carbonFootprintsRef);
           const ids = querySnapshot.docs.map(doc => doc.id); // Get the document IDs
           console.log("Fetched Carbon Footprint IDs:", ids); // Debugging line
+
+          // Cache the IDs in AsyncStorage
+        //   await AsyncStorage.setItem('carbonFootprintIds', JSON.stringify(ids));
           return ids; // Return an array of IDs
         } catch (error) {
           console.error('Error fetching carbon footprint IDs:', error);
@@ -40,7 +44,7 @@ function  LandingScreen({ navigation }){
         }
     };
 
-    // UseEffect to load the carbonfootprints id's to be used to calculate average
+    // UseEffect to load the carbonfootprints id's to be used to calculate average    
     useEffect(() => {
         const fetchCarbonFootprintIds = async () => {
             const uid = auth.currentUser?.uid;
@@ -53,6 +57,21 @@ function  LandingScreen({ navigation }){
     }, []);
     
     // Function to get the specific answers from the users carbonfootprints
+    // Fetch answers and cache them as well
+    const fetchAnswers = async (ids) => {
+        const uid = auth.currentUser?.uid;
+        try {
+            const retrievedAnswers = await getAnswers(uid, ids);
+            setAnswers(retrievedAnswers || []);
+
+            // Cache answers in AsyncStorage
+            // await AsyncStorage.setItem('answers', JSON.stringify(retrievedAnswers || []));
+        } catch (err) {
+            setError("Error retrieving answers");
+            console.error("Error retrieving answers:", err);
+        }
+    };
+    
     useEffect(() => {
         if (carbonFootprintIds && carbonFootprintIds.length > 0) {
             const fetchData = async () => {
@@ -80,25 +99,52 @@ function  LandingScreen({ navigation }){
     }, [answers]);
 
     // Calculate average emission whenever answers are updated
-    useEffect(() => {
-        if (answers.length > 0) {
-            const validEmissions = answers
-                .map(answer => parseFloat(answer.totalEmission)) // Ensure conversion to number
-                .filter(emission => !isNaN(emission) && emission > 0); // Filter valid numeric values
     
-            if (validEmissions.length > 0) {
-                const totalEmission = validEmissions.reduce((sum, emission) => sum + emission, 0);
-                const avgEmission = totalEmission / validEmissions.length;
-                setAverageEmission(parseFloat(avgEmission.toFixed(1)));;
-            } else {
-                console.warn("No valid emissions found in answers.");
-                setAverageEmission(0);
-            }
-        } else {
-            setAverageEmission(0);
-        }
-    }, [answers]);
+    useFocusEffect(
+        useCallback(() => {
+            const handleAverage = () => {
+                if (answers.length > 0) {
+                            const validEmissions = answers
+                                .map(answer => parseFloat(answer.totalEmission)) // Ensure conversion to number
+                                .filter(emission => !isNaN(emission) && emission > 0); // Filter valid numeric values
+                
+                            if (validEmissions.length > 0) {
+                                const totalEmission = validEmissions.reduce((sum, emission) => sum + emission, 0);
+                                const avgEmission = totalEmission / validEmissions.length;
+                                setAverageEmission(avgEmission);
+                                setAverageEmission(parseFloat(avgEmission.toFixed(1)));;
+                            } else {
+                                console.warn("No valid emissions found in answers.");
+                                setAverageEmission(0);
+                            }
+                        } else {
+                            setAverageEmission(0);
+                        }
+            };
 
+            handleAverage();
+        }, [answers])
+    );
+
+    // useEffect(() => {
+    //     if (answers.length > 0) {
+    //         const validEmissions = answers
+    //             .map(answer => parseFloat(answer.totalEmission)) // Ensure conversion to number
+    //             .filter(emission => !isNaN(emission) && emission > 0); // Filter valid numeric values
+
+    //         if (validEmissions.length > 0) {
+    //             const totalEmission = validEmissions.reduce((sum, emission) => sum + emission, 0);
+    //             const avgEmission = totalEmission / validEmissions.length;
+    //             setAverageEmission(avgEmission);
+    //             setAverageEmission(parseFloat(avgEmission.toFixed(1)));;
+    //         } else {
+    //             console.warn("No valid emissions found in answers.");
+    //             setAverageEmission(0);
+    //         }
+    //     } else {
+    //         setAverageEmission(0);
+    //     }
+    // }, [answers]);
     
     // To show if theri is an error when loading the page
     // if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
@@ -147,7 +193,9 @@ function  LandingScreen({ navigation }){
                 </View>
                 <View>
                     <Image style={styles.chartImage} source={{ uri: chartUrl }} resizeMode="contain" />
+                    
                 </View>
+                {loading && <Text style={styles.loadingText}>Loading...</Text>}
                 <View>
                     <Text style={styles.subhead}>Explore CarbonTrack</Text>
                     <View>
@@ -228,6 +276,13 @@ const styles = StyleSheet.create({
         height: 140,
         marginBottom: 7
     },
+    loadingText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+        marginTop: 10,
+        fontFamily: 'NunitoMedium',
+    },
     graph: {
         marginTop: 20,
         marginBottom: 20,
@@ -292,7 +347,7 @@ const styles = StyleSheet.create({
         color: 'white',
         marginLeft: 10,
         fontSize: 17,
-        marginRight: 10,
+        marginRight: 22,
         marginTop: 2,
         fontFamily: 'NunitoMedium'
     },
