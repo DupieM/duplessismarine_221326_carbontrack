@@ -235,7 +235,7 @@ The `Development Process` is the technical implementations and functionality don
 General Feedback:
 * Feedback received was positive and not many issues was experienced. The mobile app seems to be interesting to them and some of the functionality used like the 'card form' on the tracker screen impressed them.
 * See below the average score of the questions asked with a scale of 1-10
-<img src="readme_images_&_video/chart.png" alt="Graph" width="800px">
+<img src="readme_images_&_video/chart.png" alt="Graph" width="500px">
 
 Observations made:
 * The layout and the look and feel of the app was received positively and minor changes were suggested
