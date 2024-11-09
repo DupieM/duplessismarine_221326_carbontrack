@@ -26,14 +26,14 @@ function ReduceScreen({ route }){
             // General carbon footprint reduction tips query (3 articles)
             const generalQuery = 'The best ways to reduce your carbon footprint';
             const generalResponse = await axios.get(
-                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${generalQuery}&num=3`
+                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${generalQuery}&num=2`
             );
             setGeneralArticles(generalResponse.data.items); // Storing general articles
 
             // Specific reduction tips based on totalEmission (7 articles)
             const specificQuery = `How to reduce your carbon footprint by ${Emission.totalEmission} emissions`;
             const specificResponse = await axios.get(
-                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${specificQuery}&num=7`
+                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${specificQuery}&num=8`
             );
             setSpecificArticles(specificResponse.data.items); // Storing emission-specific articles
 
