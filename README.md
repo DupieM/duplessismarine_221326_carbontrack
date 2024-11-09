@@ -277,16 +277,19 @@ Improvents made:
 
 ### Mockups
 
-![Mockup 1]()
+![Mockup 1](readme_images_&_video/mockup_1.jpg)
 <br>
 
-![Mockup 2]()
+![Mockup 2](readme_images_&_video/mockup_2.jpg)
 <br>
 
-![Mockup 3]()
+![Mockup 3](readme_images_&_video/mockup_3.jpg)
 <br>
 
-![Mockup 4]()
+![Mockup 4](readme_images_&_video/mockup_4.jpg)
+<br>
+
+![Mockup 5](readme_images_&_video/mockup_5.jpg)
 
 <!-- VIDEO DEMONSTRATION -->
 ### Video Demonstration
