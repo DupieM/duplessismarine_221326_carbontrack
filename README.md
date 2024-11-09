@@ -62,7 +62,7 @@
 <!--PROJECT DESCRIPTION-->
 ## About the Project
 <!-- header image of project -->
-<img src="readme_images_&_video/header_image.jpg" alt="header image" width="850px">
+<img src="readme_images_&_video/header_image.jpg" alt="header image" width="600px">
 
 ### Project Description
 
