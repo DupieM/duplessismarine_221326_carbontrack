@@ -139,7 +139,7 @@ A user can either create a new account or they can log in to an existing account
 
 </br>
 
-<img src="readme_images_&_video/landing.jpg" alt="Landing" width="100px">
+<img src="readme_images_&_video/landing.jpg" alt="Landing" width="300px">
 
 ### Landing Screen
 
