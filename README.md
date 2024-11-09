@@ -62,7 +62,7 @@
 <!--PROJECT DESCRIPTION-->
 ## About the Project
 <!-- header image of project -->
-<img src="" alt="header image" width="950px">
+<img src="readme_images_&_video/header_image.jpg" alt="header image" width="960px">
 
 ### Project Description
 
@@ -132,42 +132,42 @@ To start the Expo app on a phone:
 <!-- You can add the links to all of your imagery at the bottom of the file as references -->
 ## Features and Functionality
 
-![Authentication]()
+![Authentication](readme_images_&_video/auth.jpg)
 ### Authentication Screens
 
 A user can either create a new account or they can log in to an existing account that they have. A user is also able to change their password if they forgot it with the "Forgot Password" on the login screen, this will send an email to the user email adress to reset tha password.
 
 </br>
 
-![Landing]()
+![Landing](readme_images_&_video/landing.jpg)
 ### Landing Screen
 
 A new user will be able to see the global average carbon footprint for a single individual. An existing user is able to view their average carbon footprint calculated from their previous carbon footprints calculated on the app. Users can navigate to the Tracker screen and the Reduce screen from the Landing screen. Users can also sign out of their account on the landing screen.
 
 </br>
 
-![Tracker]()
+![Tracker](readme_images_&_video/track.jpg)
 ### Tracker Screen
 
 Users will be able to calculate their carbon footprint here. Information can be viewed on how to fill in the form for the first time. Users are able to enter the necessary information to calculate their carbon footprint. The total emission for the user will be calculated and shown.
 
 </br>
 
-![Result]()
+![Result](readme_images_&_video/result.jpg)
 ### My CO2 Screen
 
 Users are able to view their current and previous carbon footprint (if available) in a bar chart. Users can also view a breakdown of their carbon footprint for the various emission categories. Lastly users will receive insights via AI on the breakdown of their carbon footprint data.
 
 </br>
 
-![Reduce]()
+![Reduce](readme_images_&_video/reduce.jpg)
 ### Reduce Screen
 
 Users are able to view and click through to articles on reducing their CO2 emissions in general and also to reduce their specific carbon footprint.
 
 </br>
 
-![Initiative]()
+![Initiative](readme_images_&_video/initiative.jpg)
 ### Initiative Screen
 
 Users are able to view available local initiatives in their community related to environmental projects.
@@ -185,11 +185,11 @@ The `Conceptual Process` is the set of actions, activities and research that was
 
 ### Wireframes
 
-<img src="" alt="Wireframe 1" width="800px">
+<img src="readme_images_&_video/Wireframe_1.png" alt="Wireframe 1" width="800px">
 </br>
-<img src="" alt="Wireframe 2" width="800px">
+<img src="readme_images_&_video/Wireframe_2.png" alt="Wireframe 2" width="800px">
 </br>
-<img src="" alt="Wireframe 3" width="800px">
+<img src="readme_images_&_video/Wireframe_3.png" alt="Wireframe 3" width="800px">
 
 ### User-flow
 
