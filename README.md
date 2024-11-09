@@ -62,7 +62,7 @@
 <!--PROJECT DESCRIPTION-->
 ## About the Project
 <!-- header image of project -->
-<img src="readme_images_&_video/header_image.jpg" alt="header image" width="960px">
+<img src="readme_images_&_video/header_image.jpg" alt="header image" width="850px">
 
 ### Project Description
 
@@ -185,11 +185,11 @@ The `Conceptual Process` is the set of actions, activities and research that was
 
 ### Wireframes
 
-<img src="readme_images_&_video/Wireframe_1.png" alt="Wireframe 1" width="800px">
+<img src="readme_images_&_video/Wireframe_1.png" alt="Wireframe 1" width="700px">
 </br>
-<img src="readme_images_&_video/Wireframe_2.png" alt="Wireframe 2" width="800px">
+<img src="readme_images_&_video/Wireframe_2.png" alt="Wireframe 2" width="700px">
 </br>
-<img src="readme_images_&_video/Wireframe_3.png" alt="Wireframe 3" width="800px">
+<img src="readme_images_&_video/Wireframe_3.png" alt="Wireframe 3" width="700px">
 
 ### User-flow
 
