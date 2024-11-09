@@ -148,27 +148,31 @@ A new user will be able to see the global average carbon footprint for a single 
 </br>
 
 ![Tracker](readme_images_&_video/track.jpg)
+
 ### Tracker Screen
 
 Users will be able to calculate their carbon footprint here. Information can be viewed on how to fill in the form for the first time. Users are able to enter the necessary information to calculate their carbon footprint. The total emission for the user will be calculated and shown.
 
 </br>
 
-![Result](readme_images_&_video/result.jpg)
+<img src="readme_images_&_video/result.jpg" alt="result" width="300px">
+
 ### My CO2 Screen
 
 Users are able to view their current and previous carbon footprint (if available) in a bar chart. Users can also view a breakdown of their carbon footprint for the various emission categories. Lastly users will receive insights via AI on the breakdown of their carbon footprint data.
 
 </br>
 
-![Reduce](readme_images_&_video/reduce.jpg)
+<img src="readme_images_&_video/reduce.jpg" alt="reduce" width="300px">
+
 ### Reduce Screen
 
 Users are able to view and click through to articles on reducing their CO2 emissions in general and also to reduce their specific carbon footprint.
 
 </br>
 
-![Initiative](readme_images_&_video/initiative.jpg)
+<img src="readme_images_&_video/initiative.jpg" alt="initiative" width="300px">
+
 ### Initiative Screen
 
 Users are able to view available local initiatives in their community related to environmental projects.
