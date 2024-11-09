@@ -28,7 +28,7 @@ function  SignUpScreen({}){
     
         // Check success of the sign-up process
         if (success) {
-            Alert.alert("Sign Up", "You have successfully signed into FunRun.");
+            Alert.alert("Sign Up", "You have successfully signed into carbonTrack.");
         }
     };
 

@@ -223,7 +223,7 @@ function ResultScreen({ navigation, route }) {
     const barChartUrl = generateBarChartUrl();
 
     // Extract emissions data
-    const hasEmissionsData = carbonFootprint.householdEmission || carbonFootprint.transportEmission || carbonFootprint.energyEmission || carbonFootprint.dietEmission;
+    const hasEmissionsData = carbonFootprint.householdEmission || carbonFootprint.transportEmission || carbonFootprint.energyEmission || carbonFootprint.dietEmission || carbonFootprint.totalEmission;
 
     //Quickchart url for polar area chart for breakdown of emission data
     const chartUrl = hasEmissionsData ? `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify({
@@ -285,7 +285,6 @@ function ResultScreen({ navigation, route }) {
     //     navigation.navigate('Reduce', { Emission: carbonFootprint })
     // }
 
-
     return (
         <ScrollView style={styles.container}>
             <View style={styles.head}>
@@ -294,9 +293,8 @@ function ResultScreen({ navigation, route }) {
                 <Text style={styles.subhead}>Insights based on your carbon footprint data below</Text>
             </View>
 
-            {/* <Button title="Refresh" onPress={handleRefresh}/> */}
-            <TouchableOpacity onPress={handleRefresh}>
-            <Ionicons name="refresh" size={30} color="white" />
+            <TouchableOpacity style={styles.refresh} onPress={handleRefresh}>
+                <Ionicons name="refresh" size={27} color="white" />
             </TouchableOpacity>
 
             <Image style={styles.chartImage} source={{ uri: barChartUrl }} resizeMode="contain" />
@@ -358,6 +356,11 @@ const styles = StyleSheet.create({
         fontSize: 34,
         color: '#438EF3'
     },
+    refresh: {
+        marginTop: 20,
+        marginBottom: -48,
+        marginLeft: 317
+    },
     chartImage: {
         marginLeft: 3,
         width: 350,
@@ -415,17 +418,6 @@ const styles = StyleSheet.create({
         textAlign: 'center', 
         marginTop: 10,
         marginBottom: 30
-    },
-    refreshButton: {
-        backgroundColor: '#96D629',
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-        marginVertical: 15,
-    },
-    refreshText: {
-        color: 'white',
-        fontWeight: 'bold',
     },
 });
 

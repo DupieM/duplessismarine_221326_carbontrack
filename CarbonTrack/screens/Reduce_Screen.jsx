@@ -6,27 +6,41 @@ import { GOOGLE_API_KEY, SEARCH_ENGINE_ID } from '@env';
 
 function ReduceScreen({ route }){
 
-    const Emission = route.params;
+    const [generalArticles, setGeneralArticles] = useState([]);// General Article
+    const [specificArticles, setSpecificArticles] = useState([])// Specific Articles
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
     const [selectedArticleUrl, setSelectedArticleUrl] = useState(null); // URL of the selected article
+    const [totalEmission, setTotalEmission] = useState(null)
 
-    console.log('Data:', Emission)
+     // Get the data passed from ResultScreen
+     const  Emission  = route.params?.Emission || {};
+     console.log('Emission Data:', Emission);
 
+     console.log("Data fetched:",Emission.totalEmission);
+    
     // Function to fetch tips/articles from Google Custom Search API
     const fetchArticles = async () => {
         try {
-            const query = 'The best ways to reduce your carbon footprint that was recently published'; // Your search query
-            const response = await axios.get(
-                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${query}`
+            // General carbon footprint reduction tips query (3 articles)
+            const generalQuery = 'The best ways to reduce your carbon footprint';
+            const generalResponse = await axios.get(
+                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${generalQuery}&num=3`
             );
+            setGeneralArticles(generalResponse.data.items); // Storing general articles
 
-            setArticles(response.data.items); // Storing the fetched articles
+            // Specific reduction tips based on totalEmission (7 articles)
+            const specificQuery = `How to reduce your carbon footprint by ${Emission.totalEmission} emissions`;
+            const specificResponse = await axios.get(
+                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${specificQuery}&num=7`
+            );
+            setSpecificArticles(specificResponse.data.items); // Storing emission-specific articles
+
         } catch (error) {
             console.error('Error fetching articles:', error);
         } finally {
-            setLoading(false);
+            setLoading(false); // Set loading to false when done
         }
     };
 
@@ -58,13 +72,37 @@ function ReduceScreen({ route }){
                 <ActivityIndicator size="large" color="#C1FF1C" />
             ) : (
                 <ScrollView>
-                    {articles.map((article, index) => (
-                        <TouchableOpacity key={index} style={styles.cardone} onPress={() => openModal(article.link)}>
-                            <Text style={styles.cardparagrap}>
-                                {article.title}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
+                    {/* General Tips Section */}
+                    <Text style={styles.sectionHeader}>General Tips to Reduce Your Carbon Footprint</Text>
+                    {generalArticles.length === 0 ? (
+                        <Text style={styles.noArticlesText}>No general articles found</Text>
+                    ) : (
+                        generalArticles.map((article, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={styles.cardone}
+                                onPress={() => openModal(article.link)}
+                            >
+                                <Text style={styles.cardparagrap}>{article.title}</Text>
+                            </TouchableOpacity>
+                        ))
+                    )}
+
+                    {/* Emission-specific Tips Section */}
+                    <Text style={styles.sectionHeader}>Tips Based on Your Total Emission of {Emission.totalEmission} kg CO2</Text>
+                    {specificArticles.length === 0 ? (
+                        <Text style={styles.noArticlesText}>No emission-specific articles found</Text>
+                    ) : (
+                        specificArticles.map((article, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={styles.cardone}
+                                onPress={() => openModal(article.link)}
+                            >
+                                <Text style={styles.cardparagrap}>{article.title}</Text>
+                            </TouchableOpacity>
+                        ))
+                    )}
                 </ScrollView>
             )}
             
@@ -137,6 +175,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         fontFamily: 'NunitoMedium', 
         lineHeight: 27
+    },
+    sectionHeader: {
+        fontSize: 24,
+        color: 'white',
+        fontFamily: 'NunitoMedium',
+        marginTop: 0,
+        marginBottom: 10,
+        textAlign: 'center'
+    },
+    noArticlesText: {
+        fontSize: 18,
+        color: '#C1FF1C',
+        textAlign: 'center',
+        marginTop: 20,
+        fontFamily: 'NunitoMedium',
     },
     modalContainer: {
         flex: 1,

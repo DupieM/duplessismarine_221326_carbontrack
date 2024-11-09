@@ -5,21 +5,16 @@ import { createUserInformation } from "./DbService";
 
 // Log In
 export const handleLogin = async (email, password) => {
-
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
+  try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log("Logged In User -" + user.email)
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorMessage)
-    });
-
-}
+      console.log("Logged In User -" + user.email);
+      return true; // Login success
+  } catch (error) {
+      console.log(error.message); // Log the error for debugging
+      throw error; // Throw the error to be caught in the login function
+  }
+};
 
 // Reset password of account
 export const resetPassword = async (email) => {

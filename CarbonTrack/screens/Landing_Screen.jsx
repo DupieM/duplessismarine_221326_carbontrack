@@ -15,49 +15,33 @@ function  LandingScreen({ navigation }){
     }
 
     // All the useStates to set answers 
-    const [averageEmission, setAverageEmission] = useState(null);
+    const [averageEmission, setAverageEmission] = useState(0);
     const globalAverage = 4.7;
     const [carbonFootprintIds, setCarbonFootprintIds] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fetch the Carbofootprint ID's to be able to get the average and then plot it on a graph
-    const fetchYourCarbonFootprintIds = async (uid) => {
-        if (!uid) {
-          console.error('UID is missing. Cannot fetch carbon footprint IDs.');
-          return [];
-        }
-    
-        try {
-          const carbonFootprintsRef = collection(db, 'users', uid, 'carbonFootprints');
-          const querySnapshot = await getDocs(carbonFootprintsRef);
-          const ids = querySnapshot.docs.map(doc => doc.id); // Get the document IDs
-          console.log("Fetched Carbon Footprint IDs:", ids); // Debugging line
-
-          // Cache the IDs in AsyncStorage
-        //   await AsyncStorage.setItem('carbonFootprintIds', JSON.stringify(ids));
-          return ids; // Return an array of IDs
-        } catch (error) {
-          console.error('Error fetching carbon footprint IDs:', error);
-          return []; // Return an empty array on error
-        }
-    };
-
-    // UseEffect to load the carbonfootprints id's to be used to calculate average    
+    // Fetch the Carbofootprint ID's to be able to get the average and then plot it on a graph 
     useEffect(() => {
-        const fetchCarbonFootprintIds = async () => {
-            const uid = auth.currentUser?.uid;
-            if (uid) {
-                const ids = await fetchYourCarbonFootprintIds(uid);
-                setCarbonFootprintIds(ids);
-            }
-        };
-        fetchCarbonFootprintIds();
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+
+        const carbonFootprintsRef = collection(db, 'users', uid, 'carbonFootprints');
+
+        // Listen for real-time updates
+        const unsubscribe = onSnapshot(carbonFootprintsRef, (snapshot) => {
+            const ids = snapshot.docs.map((doc) => doc.id);
+            setCarbonFootprintIds(ids);
+        }, (error) => {
+            console.error("Error fetching carbon footprint IDs:", error);
+            setError("Error retrieving data.");
+        });
+
+        // Cleanup listener on unmount
+        return () => unsubscribe();
     }, []);
     
-    // Function to get the specific answers from the users carbonfootprints
-    // Fetch answers and cache them as well
     const fetchAnswers = async (ids) => {
         const uid = auth.currentUser?.uid;
         try {

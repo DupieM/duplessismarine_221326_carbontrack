@@ -21,21 +21,30 @@ function  LogInScreen({ navigation }){
     }, [email, password]);
 
     const login = async () => {
-        //Make sure all the values have been entered - show error/disable button
         if (!isFormValid) {
-          Alert.alert("Validation Error", "Please fill all the required fields.");
-          return;
+            Alert.alert("Validation Error", "Please fill all the required fields.");
+            return;
         }
-        
-        // Authenticate the user credentials with those in the firebase database
-        var success = await handleLogin(email, password);
-          
-        if (success) {
-          Alert.alert("Log In", "You have successfully logged into FunRun.");
-          return;
+    
+        try {
+            const success = await handleLogin(email, password);
+    
+            if (success) {
+                Alert.alert("Log In", "You have successfully logged into CarbonTrack.");
+            }
+        } catch (error) {
+            console.log("Login Error:", error.code, error.message); // Check the exact error code and message
+            if (error.code === 'auth/invalid-email') {
+                Alert.alert("Invalid Email", "Please enter a valid email address.");
+            } else if (error.code === 'auth/user-not-found') {
+                Alert.alert("User Not Found", "No account found with this email.");
+            } else if (error.code === 'auth/wrong-password') {
+                Alert.alert("Wrong Password", "The password you entered is incorrect.");
+            } else {
+                Alert.alert("Login Failed", "An unknown error occurred. Please try again.");
+            }
         }
-        
-    }
+    };
 
     // Handle password reset
     const handleForgotPassword = async () => {
@@ -67,7 +76,7 @@ function  LogInScreen({ navigation }){
                         <TextInput style={styles.input} placeholder='Password'
                         onChangeText={newText => setPassword(newText)}
                         defaultValue={password}
-                        // secureTextEntry={true}
+                        secureTextEntry={true}
                         />
                         <Text style={styles.password} onPress={handleForgotPassword}>
                             Forgot Password?

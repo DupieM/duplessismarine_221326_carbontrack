@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   modalContainer_two: {
     width: 340,
     padding: 20,
-    backgroundColor: '#007541',
+    backgroundColor: '#00502D',
     borderRadius: 10,
     alignItems: 'left',
   },
@@ -449,18 +449,18 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   modelSubhead_two: {
-    marginTop: 4,
-    marginBottom: 7,
-    fontSize: 18,
-    fontFamily: 'NunitoMedium',
+    marginTop: 7,
+    marginBottom: 9,
+    fontSize: 20,
+    fontFamily: 'NunitoBold',
     lineHeight: 20,
     color: 'white'
   },
   modalText_two: {
-    fontSize: 21,
+    fontSize: 20,
     marginBottom: 5,
     textAlign: 'left',
-    fontFamily: 'Nunito',
+    fontFamily: 'NunitoMedium',
     lineHeight: 23,
     fontWeight: '300',
     color: 'white'
