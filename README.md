@@ -40,6 +40,7 @@
    * [Ideation](#ideation)
    * [Wireframes](#wireframes)
    * [User-flow](#user-flow)
+   * [ERD](#erd-diagram)
 * [Development Process](#development-process)
    * [Implementation Process](#implementation-process)
         * [Highlights](#highlights)
@@ -65,7 +66,7 @@
 
 ### Project Description
 
-A nice introduction to this amazing project of mine.
+This term we were tasked to create and conceptualise any type of application for any problem we are facing from a list of options like (Enviromental, social, etc.) and to utilise some of the various AI technologies we went through in class. This application will consist of front-end and back-end requirements, as to create a real-world application that can aid or have a positive impact on researched field.The mobile application I am creating will be used to calculate a users carbon Footprint, show them their data on two charts, give insights on theri data that is calculated and will also give reducing tips for general and for their specific carbon footprint data.
 
 ### Built With
 
@@ -83,56 +84,76 @@ The following instructions will get you a copy of the project up and running on 
 
 ### Prerequisites
 
-Ensure that you have the latest version of [Software](path/to/where/they/can/download/software) installed on your machine. The [Plugin](path/to/where/they/can/download/plugin) plugin will also be required.
+Ensure that you have the latest version of [Expo](https://docs.expo.dev/get-started/create-a-project/) installed on your machine. The Expo app for a mobile phone will also be required.
 
 ### How to install
 
 ### Installation
-Here are a couple of ways to clone this repo:
+Clone the project repository as follow:
 
-1. Software </br>
-`Android Studio` -> `File` -> `New` -> `From Version Control` -> `Git`</br>
-Enter `https://github.com/username/projectname.git` into the URL field and press the `Clone` button.
+1. Go to Github Desktop and then click on clone new repository
 
-2. Clone Repository </br>
-Run the following in the command-line to clone the project:
-   ```sh
-   git clone https://github.com/username/projectname.git
-   ```
-    Open `Software` and select `File | Open...` from the menu. Select cloned directory and press `Open` button
+2. Enter `https://github.com/DupieM/duplessismarine_221326_carbontrack.git` into the URL field and press the `Clone` button.
 
-3. Install Dependencies </br>
-Run the following in the command-line to install all the required dependencies:
-   ```sh
-   npm install
-   ```
+To start the Expo app and install dependancies on laptop:
 
-4. Get a free API Key at [https://example.com](https://example.com) and enter it in the `config.js` file:
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+1.  Go to Visual Studio code  </br>
+   Open your Visual Studio code then click on File and then click on Open folder.
+    Then navigate to where you have cloned the repository and open it.
+
+2.  Start terminal </br>
+   Go to 'Terminal' then click on new terminal.
+
+3.  Install dependencies </br>
+   Enter 'npm install' to get all the dependencies
+
+3.  Install latest Expo version </br>
+   Enter 'npm install expo@latest' to get latest version
+
+3.  Start the Expo server </br>
+   Enter 'npm start' to start Expo
+
+To start the Expo app on a phone:
+
+1.  Go to Google play store or Apple play store  </br>
+   Open your plays tore and type in search field 'Expo Go'.
+   Click on the Expo Go app and then install it.
+
+2.  Open Expo Go app </br>
+   After opening the app click on QR code and scan the QR code in the terminal of the app on Visual Studio
+
+3. Start experimenting with the mobile application
 
 
 <!-- FEATURES AND FUNCTIONALITY-->
 <!-- You can add the links to all of your imagery at the bottom of the file as references -->
 ## Features and Functionality
 
-![image2][image2]
-### Feature 1
+![Authentication]()
+###  Authentication
 
 Description of Feature
 
-![image3][image3]
+</br>
+</br>
+
+![image3]()
 ### Feature 2
 
 Description of Feature
 
-![image4][image4]
+</br>
+</br>
+
+![image4]()
 ### Feature 3
 
 Description of Feature
 
-![image5][image5]
+</br>
+</br>
+
+![image5]()
 
 
 <!-- CONCEPT PROCESS -->
@@ -143,17 +164,23 @@ The `Conceptual Process` is the set of actions, activities and research that was
 
 ### Ideation
 
-![image5][image5]
-<br>
-![image6][image6]
+<img src="readme_images_&_video/Moodboard.png" alt="Moodboard" width="1000px">
 
 ### Wireframes
 
-![image7][image7]
+<img src="" alt="Wireframe 1" width="800px">
+</br>
+<img src="" alt="Wireframe 2" width="800px">
+</br>
+<img src="" alt="Wireframe 3" width="800px">
 
 ### User-flow
 
-![image8][image8]
+<img src="readme_images_&_video/User_flow.png" alt="user Flow" width="1000px">
+
+### ER-Diagram
+
+<img src="readme_images_&_video/ERD.png" alt="ERD" width="1000px">
 
 <!-- DEVELOPMENT PROCESS -->
 ## Development Process
