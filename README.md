@@ -1,9 +1,9 @@
 <br />
 
-![GitHub repo size](https://img.shields.io/github/repo-size/username/projectname?color=%000000)
-![GitHub watchers](https://img.shields.io/github/watchers/username/projectname?color=%000000)
-![GitHub language count](https://img.shields.io/github/languages/count/username/projectname?color=%000000)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/username/projectname?color=%000000)
+![GitHub repo size](https://img.shields.io/github/repo-size/DupieM/duplessismarine_221326_carbontrack?color=%000000)
+![GitHub watchers](https://img.shields.io/github/watchers/DupieM/duplessismarine_221326_carbontrack?color=%000000)
+![GitHub language count](https://img.shields.io/github/languages/count/DupieM/duplessismarine_221326_carbontrack?color=%000000)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/DupieM/duplessismarine_221326_carbontrack?color=%000000)
 
 <!-- HEADER SECTION -->
 <h5 align="center" style="padding:0;margin:0;">Mariné du Plessis</h5>
@@ -23,12 +23,11 @@
       <a href="https://github.com/username/projectname"><strong>Explore the docs »</strong></a>
    <br />
    <br />
-   <a href="path/to/demonstration/video">View Demo</a>
-    ·
     <a href="https://github.com/username/projectname/issues">Report Bug</a>
     ·
     <a href="https://github.com/username/projectname/issues">Request Feature</a>
 </p>
+
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
