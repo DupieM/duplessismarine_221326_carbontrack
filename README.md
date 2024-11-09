@@ -155,7 +155,7 @@ Users will be able to calculate their carbon footprint here. Information can be 
 
 </br>
 
-<img src="readme_images_&_video/result.jpg" alt="result" width="400px">
+<img src="readme_images_&_video/result.jpg" alt="result" width="600px">
 
 ### My CO2 Screen
 
@@ -163,7 +163,7 @@ Users are able to view their current and previous carbon footprint (if available
 
 </br>
 
-<img src="readme_images_&_video/reduce.jpg" alt="reduce" width="400px">
+<img src="readme_images_&_video/reduce.jpg" alt="reduce" width="600px">
 
 ### Reduce Screen
 
