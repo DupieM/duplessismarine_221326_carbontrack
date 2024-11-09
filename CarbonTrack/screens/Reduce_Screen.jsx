@@ -89,7 +89,7 @@ function ReduceScreen({ route }){
                     )}
 
                     {/* Emission-specific Tips Section */}
-                    <Text style={styles.sectionHeader}>Tips Based on Your Total Emission of {Emission.totalEmission} kg CO2</Text>
+                    <Text style={styles.sectionHeader}>Tips Based on Your Total Emission of {Emission.totalEmission} ton CO2</Text>
                     {specificArticles.length === 0 ? (
                         <Text style={styles.noArticlesText}>No emission-specific articles found</Text>
                     ) : (
