@@ -1,9 +1,9 @@
 <br />
 
-![GitHub repo size](https://img.shields.io/github/repo-size/DupieM/duplessismarine_221326_carbontrack?color=%000000)
-![GitHub watchers](https://img.shields.io/github/watchers/DupieM/duplessismarine_221326_carbontrack?color=%000000)
-![GitHub language count](https://img.shields.io/github/languages/count/DupieM/duplessismarine_221326_carbontrack?color=%000000)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/DupieM/duplessismarine_221326_carbontrack?color=%000000)
+![GitHub repo size](https://img.shields.io/github/repo-size/DupieM/duplessismarine_221326_carbontrack)
+![GitHub watchers](https://img.shields.io/github/watchers/DupieM/duplessismarine_221326_carbontrack)
+![GitHub language count](https://img.shields.io/github/languages/count/DupieM/duplessismarine_221326_carbontrack)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/DupieM/duplessismarine_221326_carbontrack)
 
 <!-- HEADER SECTION -->
 <h5 align="center" style="padding:0;margin:0;">Mariné du Plessis</h5>
@@ -257,3 +257,5 @@ Distributed under the MIT License. See `LICENSE` for more information.\
 * [Resource Name](path/to/resource)
 * [Resource Name](path/to/resource)
 * [Resource Name](path/to/resource)
+
+
