@@ -13,6 +13,7 @@ function ReduceScreen({ route }){
     const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
     const [selectedArticleUrl, setSelectedArticleUrl] = useState(null); // URL of the selected article
     const [totalEmission, setTotalEmission] = useState(null)
+    const [previousEmission, setPreviousEmission] = useState(null);
 
      // Get the data passed from ResultScreen
      const  Emission  = route.params?.Emission || {};
@@ -21,22 +22,49 @@ function ReduceScreen({ route }){
      console.log("Data fetched:",Emission.totalEmission);
     
     // Function to fetch tips/articles from Google Custom Search API
+    // const fetchArticles = async () => {
+    //     try {
+    //         // General carbon footprint reduction tips query (3 articles)
+    //         const generalQuery = 'The best ways to reduce your carbon footprint';
+    //         const generalResponse = await axios.get(
+    //             `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${generalQuery}&num=3`
+    //         );
+    //         setGeneralArticles(generalResponse.data.items); // Storing general articles
+
+    //         // Specific reduction tips based on totalEmission (7 articles)
+    //         const specificQuery = `How to reduce your carbon footprint by ${Emission.totalEmission} emissions`;
+    //         const specificResponse = await axios.get(
+    //             `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${specificQuery}&num=7`
+    //         );
+    //         setSpecificArticles(specificResponse.data.items); // Storing emission-specific articles
+
+    //     } catch (error) {
+    //         console.error('Error fetching articles:', error);
+    //     } finally {
+    //         setLoading(false); // Set loading to false when done
+    //     }
+    // };
+
     const fetchArticles = async () => {
         try {
+            setLoading(true); // Set loading to true when fetching new data
+
             // General carbon footprint reduction tips query (3 articles)
             const generalQuery = 'The best ways to reduce your carbon footprint';
             const generalResponse = await axios.get(
-                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${generalQuery}&num=2`
+                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${generalQuery}&num=3`
             );
-            setGeneralArticles(generalResponse.data.items); // Storing general articles
+            setGeneralArticles(generalResponse.data.items);
 
-            // Specific reduction tips based on totalEmission (7 articles)
-            const specificQuery = `How to reduce your carbon footprint by ${Emission.totalEmission} emissions`;
+            // Set specific query based on totalEmission if available, otherwise use a general query
+            const specificQuery = Emission.totalEmission
+                ? `How to reduce your carbon footprint by ${Emission.totalEmission} emissions`
+                : 'The best ways to reduce your carbon footprint';
+
             const specificResponse = await axios.get(
-                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${specificQuery}&num=8`
+                `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${SEARCH_ENGINE_ID}&q=${specificQuery}&num=7`
             );
-            setSpecificArticles(specificResponse.data.items); // Storing emission-specific articles
-
+            setSpecificArticles(specificResponse.data.items);
         } catch (error) {
             console.error('Error fetching articles:', error);
         } finally {
@@ -44,10 +72,21 @@ function ReduceScreen({ route }){
         }
     };
 
-    // call the fetch articles function
+    // UseEffect to call fetchArticles whenever Emission.totalEmission changes
     useEffect(() => {
-        fetchArticles();
-    }, []);
+        // Only fetch new articles if totalEmission has changed
+        if (Emission.totalEmission !== previousEmission) {
+            setPreviousEmission(Emission.totalEmission); // Update previousEmission to current value
+            fetchArticles(); // Fetch articles based on updated totalEmission
+        }
+    }, [Emission.totalEmission]);
+
+
+
+    // call the fetch articles function
+    // useEffect(() => {
+    //     fetchArticles();
+    // }, []);
 
     // open the model to view the articles
     const openModal = (url) => {
@@ -89,20 +128,26 @@ function ReduceScreen({ route }){
                     )}
 
                     {/* Emission-specific Tips Section */}
-                    <Text style={styles.sectionHeader}>Tips Based on Your Total Emission of {Emission.totalEmission} ton CO2</Text>
-                    {specificArticles.length === 0 ? (
-                        <Text style={styles.noArticlesText}>No emission-specific articles found</Text>
-                    ) : (
-                        specificArticles.map((article, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                style={styles.cardone}
-                                onPress={() => openModal(article.link)}
-                            >
-                                <Text style={styles.cardparagrap}>{article.title}</Text>
-                            </TouchableOpacity>
-                        ))
-                    )}
+                    {Emission.totalEmission && (
+                    <>
+                        <Text style={styles.sectionHeader}>
+                            Tips Based on Your Total Emission of {Emission.totalEmission} ton CO2
+                        </Text>
+                        {specificArticles.length === 0 ? (
+                            <Text style={styles.noArticlesText}>No emission-specific articles found</Text>
+                        ) : (
+                            specificArticles.map((article, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    style={styles.cardone}
+                                    onPress={() => openModal(article.link)}
+                                >
+                                    <Text style={styles.cardparagrap}>{article.title}</Text>
+                                </TouchableOpacity>
+                            ))
+                        )}
+                    </>
+                )}
                 </ScrollView>
             )}
             
