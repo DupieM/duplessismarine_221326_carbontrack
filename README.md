@@ -139,7 +139,7 @@ A user can either create a new account or they can log in to an existing account
 
 </br>
 
-![Landing](readme_images_&_video/landing.jpg)
+<img src="readme_images_&_video/landing.jpg" alt="Landing" width="600px">
 ### Landing Screen
 
 A new user will be able to see the global average carbon footprint for a single individual. An existing user is able to view their average carbon footprint calculated from their previous carbon footprints calculated on the app. Users can navigate to the Tracker screen and the Reduce screen from the Landing screen. Users can also sign out of their account on the landing screen.
