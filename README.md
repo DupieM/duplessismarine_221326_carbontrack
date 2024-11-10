@@ -155,7 +155,7 @@ Users will be able to calculate their carbon footprint here. Information can be 
 
 </br>
 
-<img src="readme_images_&_video/result.jpg" alt="result" width="600px">
+<img src="readme_images_&_video/7.jpg" alt="result" width="600px">
 
 ### My CO2 Screen
 
@@ -283,20 +283,20 @@ Improvents made:
 ![Mockup 2](readme_images_&_video/mockup_2.jpg)
 <br>
 
-![Mockup 3](readme_images_&_video/mockup_3.jpg)
+![Mockup 3](readme_images_&_video/8.jpg)
 <br>
 
 ![Mockup 4](readme_images_&_video/mockup_4.jpg)
 <br>
 
-![Mockup 5](readme_images_&_video/mockup_5.jpg)
+![Mockup 5](readme_images_&_video/9.jpg)
 
 <!-- VIDEO DEMONSTRATION -->
 ### Video Demonstration
 
 To see a run through of the application, click below:
 
-[View Demonstration]()
+[View Demonstration](https://drive.google.com/file/d/1yL_K97N9HWpUpl5oujaiA7C5OFio8md6/view?usp=sharing)
 
 <!-- ROADMAP -->
 ## Roadmap
