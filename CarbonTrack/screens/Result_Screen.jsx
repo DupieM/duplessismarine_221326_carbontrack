@@ -204,9 +204,11 @@ function ResultScreen({ navigation, route }) {
                     fontColor: 'white' // Title text color
                 },
                 legend: {
+                    display: true,
+                    position: 'top',
                     labels: {
                         fontColor: 'white' // Legend text color
-                    }
+                    },
                 },
                 tooltips: {
                     titleFontColor: 'white',
